@@ -1,0 +1,19 @@
+{
+  "name": "obiad-team",
+  "version": "1.0.0",
+  "description": "Retro Web 1.0 lunch booking app",
+  "scripts": {
+    "install-all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev-backend": "npm run dev --prefix backend",
+    "dev-frontend": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run dev-backend\" \"npm run dev-frontend\"",
+    "build": "npm run build --prefix frontend",
+    "start": "npm run dev"
+  },
+  "keywords": ["lunch", "retro", "web1.0", "booking"],
+  "author": "OBIAD TEAM",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

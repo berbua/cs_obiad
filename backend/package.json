@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "express": "^5.2.1",
     "node-cron": "^4.2.1",
-    "@vercel/postgres": "^0.10.0"
+    "@vercel/postgres": "^0.10.0",
+    "dotenv": "^16.4.5"
   }
 }

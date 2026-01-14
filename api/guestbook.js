@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
-      const entries = db.getGuestbookEntries();
+      const entries = await db.getGuestbookEntries();
       return res.json({ entries });
     } catch (error) {
       console.error('Error fetching guestbook:', error);
@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: 'Nick and comment are required' });
       }
 
-      const result = db.addGuestbookEntry(nick, comment);
+      const result = await db.addGuestbookEntry(nick, comment);
       return res.json({ success: true, id: result.lastInsertRowid });
     } catch (error) {
       console.error('Error adding guestbook entry:', error);

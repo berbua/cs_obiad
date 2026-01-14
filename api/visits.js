@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
-      const counter = db.getAndIncrementVisits();
+      const counter = await db.getAndIncrementVisits();
       return res.json({ visits: counter });
     } catch (error) {
       console.error('Error updating visits:', error);

@@ -1,2 +1,2 @@
-// Shared database module
-module.exports = require('../backend/database-json');
+// Vercel Postgres database
+module.exports = require('../backend/database-postgres');

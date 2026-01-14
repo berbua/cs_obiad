@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
-      const signups = db.getTodaySignups();
+      const signups = await db.getTodaySignups();
       return res.json({ signups });
     } catch (error) {
       console.error('Error fetching signups:', error);
@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: 'Nick is required' });
       }
 
-      const result = db.addSignup(nick, time || '', comment || '', moodIcon || '🍕');
+      const result = await db.addSignup(nick, time || '', comment || '', moodIcon || '🍕');
       return res.json({ success: true, id: result.lastInsertRowid });
     } catch (error) {
       console.error('Error adding signup:', error);

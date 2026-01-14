@@ -19,6 +19,7 @@ const {
   getAndIncrementVisits,
   getGuestbookEntries,
   addGuestbookEntry,
+  incrementSignupLikes,
 } = db;
 
 // Initialize cron job only for non-serverless environments
@@ -107,6 +108,23 @@ app.post('/api/guestbook', (req, res) => {
   } catch (error) {
     console.error('Error adding guestbook entry:', error);
     res.status(500).json({ error: 'Failed to add guestbook entry' });
+  }
+});
+
+// Like signup
+app.post('/api/signup-like', (req, res) => {
+  try {
+    const { id } = req.body;
+    
+    if (!id) {
+      return res.status(400).json({ error: 'Signup ID is required' });
+    }
+
+    const likes = incrementSignupLikes(id);
+    res.json({ success: true, likes });
+  } catch (error) {
+    console.error('Error incrementing likes:', error);
+    res.status(500).json({ error: 'Failed to increment likes' });
   }
 });
 

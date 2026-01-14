@@ -1,15 +1,15 @@
 const { createPool } = require('@vercel/postgres');
 
-// Use OBIAD_ prefixed connection string
-const connectionString = process.env.OBIAD_POSTGRES_URL || 
-                         process.env.OBIAD_POSTGRES_PRISMA_URL;
+// Use standard Vercel Postgres connection string
+const connectionString = process.env.POSTGRES_URL || 
+                         process.env.POSTGRES_PRISMA_URL;
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   
   try {
     if (!connectionString) {
-      throw new Error('No OBIAD_POSTGRES_URL or OBIAD_POSTGRES_PRISMA_URL found');
+      throw new Error('No POSTGRES_URL or POSTGRES_PRISMA_URL found');
     }
 
     // Create a pool connection which works better with Vercel Postgres
@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
       status: 'ERROR', 
       message: 'Failed to run migration',
       error: error.message,
-      hint: 'Check if OBIAD_POSTGRES_URL or OBIAD_POSTGRES_PRISMA_URL is set correctly'
+      hint: 'Check if POSTGRES_URL or POSTGRES_PRISMA_URL is set correctly'
     });
   }
 };

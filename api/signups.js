@@ -24,11 +24,11 @@ module.exports = async (req, res) => {
     try {
       const { nick, time, comment, moodIcon } = req.body;
       
-      if (!nick || !time) {
-        return res.status(400).json({ error: 'Nick and time are required' });
+      if (!nick) {
+        return res.status(400).json({ error: 'Nick is required' });
       }
 
-      const result = db.addSignup(nick, time, comment || '', moodIcon || '🍕');
+      const result = db.addSignup(nick, time || '', comment || '', moodIcon || '🍕');
       return res.json({ success: true, id: result.lastInsertRowid });
     } catch (error) {
       console.error('Error adding signup:', error);

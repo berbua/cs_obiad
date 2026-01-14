@@ -15,13 +15,26 @@ function App() {
   
   // Form states
   const [nick, setNick] = useState('');
-  const [time, setTime] = useState('12:00');
+  const [time, setTime] = useState('');
   const [comment, setComment] = useState('');
   const [moodIcon, setMoodIcon] = useState('🍕');
   
   // Guestbook form states
   const [guestNick, setGuestNick] = useState('');
   const [guestComment, setGuestComment] = useState('');
+
+  // Load saved nick from localStorage on mount
+  useEffect(() => {
+    const savedNick = localStorage.getItem('obiad_nick');
+    if (savedNick) {
+      setNick(savedNick);
+    }
+    
+    const savedGuestNick = localStorage.getItem('obiad_guest_nick');
+    if (savedGuestNick) {
+      setGuestNick(savedGuestNick);
+    }
+  }, []);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -62,10 +75,13 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!nick || !time) {
-      alert('⚠️ Musisz podać nick i godzinę!');
+    if (!nick) {
+      alert('⚠️ Musisz podać nick!');
       return;
     }
+
+    // Save nick to localStorage for future use
+    localStorage.setItem('obiad_nick', nick);
 
     try {
       const response = await fetch(`${API_URL}/signups`, {
@@ -76,8 +92,7 @@ function App() {
 
       if (response.ok) {
         alert('✅ Zapisano na obiad!');
-        setNick('');
-        setTime('12:00');
+        setTime('');
         setComment('');
         setMoodIcon('🍕');
         await fetchSignups();
@@ -97,6 +112,9 @@ function App() {
       return;
     }
 
+    // Save guest nick to localStorage
+    localStorage.setItem('obiad_guest_nick', guestNick);
+
     try {
       const response = await fetch(`${API_URL}/guestbook`, {
         method: 'POST',
@@ -106,7 +124,6 @@ function App() {
 
       if (response.ok) {
         alert('✅ Wpis dodany do księgi gości!');
-        setGuestNick('');
         setGuestComment('');
         await fetchGuestbook();
       } else {
@@ -128,14 +145,6 @@ function App() {
       setMusicPlaying(true);
     }
   };
-
-  const timeOptions = [];
-  for (let hour = 11; hour <= 15; hour++) {
-    for (let minute = 0; minute < 60; minute += 15) {
-      const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-      timeOptions.push(timeStr);
-    }
-  }
 
   return (
     <div className="app">
@@ -162,7 +171,7 @@ function App() {
                   <div key={signup.id} className="signup-item">
                     <span className="mood-icon">{signup.mood_icon}</span>
                     <span className="signup-nick">{signup.nick}</span>
-                    <span className="signup-time">⏰ {signup.time}</span>
+                    {signup.time && <span className="signup-time">⏰ {signup.time}</span>}
                     {signup.comment && (
                       <span className="signup-comment">💬 {signup.comment}</span>
                     )}
@@ -189,14 +198,14 @@ function App() {
             </div>
 
             <div className="form-group">
-              <label>Godzina:</label>
-              <select value={time} onChange={(e) => setTime(e.target.value)}>
-                {timeOptions.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
+              <label>Godzina (opcjonalnie):</label>
+              <input
+                type="text"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                placeholder="np. 12:30"
+                maxLength={5}
+              />
             </div>
 
             <div className="form-group">

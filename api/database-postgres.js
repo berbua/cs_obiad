@@ -1,12 +1,20 @@
 const { sql } = require('@vercel/postgres');
 
 // Vercel Postgres with OBIAD_ prefix
-// Use pooled connection string (PRISMA_URL) by default
-if (process.env.OBIAD_POSTGRES_PRISMA_URL && !process.env.POSTGRES_URL) {
-  process.env.POSTGRES_URL = process.env.OBIAD_POSTGRES_PRISMA_URL;
-} else if (process.env.OBIAD_POSTGRES_URL && !process.env.POSTGRES_URL) {
-  process.env.POSTGRES_URL = process.env.OBIAD_POSTGRES_URL;
+// Try different connection string variants - @vercel/postgres needs pooled connection
+// Priority: URL (usually pooled) > PRISMA_URL > URL_NON_POOLING (last resort)
+if (!process.env.POSTGRES_URL) {
+  if (process.env.OBIAD_POSTGRES_URL) {
+    process.env.POSTGRES_URL = process.env.OBIAD_POSTGRES_URL;
+  } else if (process.env.OBIAD_POSTGRES_PRISMA_URL) {
+    process.env.POSTGRES_URL = process.env.OBIAD_POSTGRES_PRISMA_URL;
+  } else if (process.env.OBIAD_POSTGRES_URL_NON_POOLING) {
+    console.warn('Using non-pooled connection - this might cause issues');
+    process.env.POSTGRES_URL = process.env.OBIAD_POSTGRES_URL_NON_POOLING;
+  }
 }
+
+console.log('Using Postgres connection:', process.env.POSTGRES_URL ? 'Yes' : 'No');
 
 // Initialize database tables
 async function initDatabase() {

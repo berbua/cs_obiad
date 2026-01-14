@@ -24,15 +24,18 @@ module.exports = async (req, res) => {
     try {
       const { nick, time, comment, moodIcon } = req.body;
       
+      console.log('Received signup request:', { nick, time, comment, moodIcon });
+      
       if (!nick) {
         return res.status(400).json({ error: 'Nick is required' });
       }
 
       const result = db.addSignup(nick, time || '', comment || '', moodIcon || '🍕');
+      console.log('Signup successful:', result);
       return res.json({ success: true, id: result.lastInsertRowid });
     } catch (error) {
       console.error('Error adding signup:', error);
-      return res.status(500).json({ error: 'Failed to add signup' });
+      return res.status(500).json({ error: 'Failed to add signup', details: error.message });
     }
   }
 

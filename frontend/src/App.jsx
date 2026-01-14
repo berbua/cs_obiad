@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import './styles.css';
 
-// Use environment variable for API URL, fallback to localhost for development
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:6001/api';
+// Use environment variable for API URL
+// In production (Vercel), use relative path /api
+// In development, use localhost:6001
+const API_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:6001/api');
 
 function App() {
   const [signups, setSignups] = useState([]);

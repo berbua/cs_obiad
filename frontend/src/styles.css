@@ -198,6 +198,12 @@ h2 {
   flex: 1 1 100%;
 }
 
+.signup-like-btn {
+  margin-left: auto;
+  padding: 5px 12px;
+  font-size: 16px;
+}
+
 /* Form */
 .form-group {
   margin-bottom: 20px;

@@ -65,6 +65,7 @@ function addSignup(nick, time, comment, moodIcon) {
     time,
     comment,
     mood_icon: moodIcon,
+    likes: 0,
     date: new Date().toISOString().split('T')[0]
   };
   
@@ -94,7 +95,6 @@ function addGuestbookEntry(nick, comment) {
     id: Date.now(),
     nick,
     comment,
-    likes: 0,
     date: new Date().toISOString().split('T')[0]
   };
   
@@ -109,14 +109,14 @@ function addGuestbookEntry(nick, comment) {
   return { lastInsertRowid: newEntry.id };
 }
 
-function incrementGuestbookLikes(id) {
+function incrementSignupLikes(id) {
   let data = readData();
-  const entry = data.guestbook.find(e => e.id === parseInt(id));
+  const signup = data.signups.find(s => s.id === parseInt(id));
   
-  if (entry) {
-    entry.likes = (entry.likes || 0) + 1;
+  if (signup) {
+    signup.likes = (signup.likes || 0) + 1;
     writeData(data);
-    return entry.likes;
+    return signup.likes;
   }
   
   return 0;
@@ -128,5 +128,5 @@ module.exports = {
   getAndIncrementVisits,
   getGuestbookEntries,
   addGuestbookEntry,
-  incrementGuestbookLikes,
+  incrementSignupLikes,
 };

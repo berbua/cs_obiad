@@ -16,6 +16,7 @@ async function initDatabase() {
         time VARCHAR(10),
         comment TEXT,
         mood_icon VARCHAR(10),
+        likes INTEGER NOT NULL DEFAULT 0,
         date DATE NOT NULL DEFAULT CURRENT_DATE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -36,7 +37,6 @@ async function initDatabase() {
         nick VARCHAR(100) NOT NULL,
         comment TEXT NOT NULL,
         date DATE NOT NULL DEFAULT CURRENT_DATE,
-        likes INTEGER NOT NULL DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
@@ -132,11 +132,11 @@ async function addGuestbookEntry(nick, comment) {
   }
 }
 
-// Increment likes for guestbook entry
-async function incrementGuestbookLikes(id) {
+// Increment likes for signup entry
+async function incrementSignupLikes(id) {
   try {
     const { rows } = await sql`
-      UPDATE guestbook 
+      UPDATE signups 
       SET likes = likes + 1 
       WHERE id = ${id}
       RETURNING likes
@@ -166,6 +166,6 @@ module.exports = {
   getAndIncrementVisits,
   getGuestbookEntries,
   addGuestbookEntry,
-  incrementGuestbookLikes,
+  incrementSignupLikes,
   cleanupOldSignups,
 };

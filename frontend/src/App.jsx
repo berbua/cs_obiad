@@ -137,14 +137,14 @@ function App() {
 
   const handleLike = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/guestbook-like`, {
+      const response = await fetch(`${API_URL}/signup-like`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
 
       if (response.ok) {
-        await fetchGuestbook();
+        await fetchSignups();
       }
     } catch (error) {
       console.error('Error liking entry:', error);
@@ -191,6 +191,13 @@ function App() {
                     {signup.comment && (
                       <span className="signup-comment">💬 {signup.comment}</span>
                     )}
+                    <button 
+                      className="like-btn signup-like-btn" 
+                      onClick={() => handleLike(signup.id)}
+                      title="Polub wpis"
+                    >
+                      👍 {signup.likes || 0}
+                    </button>
                   </div>
                 ))}
               </div>
@@ -291,15 +298,6 @@ function App() {
                     <span className="guest-date">{entry.date}</span>
                   </div>
                   <div className="guest-text">{entry.comment}</div>
-                  <div className="guest-likes">
-                    <button 
-                      className="like-btn" 
-                      onClick={() => handleLike(entry.id)}
-                      title="Polub wpis"
-                    >
-                      👍 {entry.likes || 0}
-                    </button>
-                  </div>
                 </div>
               ))
             )}

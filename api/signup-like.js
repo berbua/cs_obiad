@@ -15,10 +15,10 @@ module.exports = async (req, res) => {
       const { id } = req.body;
       
       if (!id) {
-        return res.status(400).json({ error: 'Entry ID is required' });
+        return res.status(400).json({ error: 'Signup ID is required' });
       }
 
-      const likes = await db.incrementGuestbookLikes(id);
+      const likes = await db.incrementSignupLikes(id);
       return res.json({ success: true, likes });
     } catch (error) {
       console.error('Error incrementing likes:', error);

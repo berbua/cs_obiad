@@ -1,7 +1,10 @@
 const { sql } = require('@vercel/postgres');
 
-// Vercel Postgres with OBIAD_ prefix - set POSTGRES_URL from OBIAD_POSTGRES_URL
-if (process.env.OBIAD_POSTGRES_URL && !process.env.POSTGRES_URL) {
+// Vercel Postgres with OBIAD_ prefix
+// Use pooled connection string (PRISMA_URL) by default
+if (process.env.OBIAD_POSTGRES_PRISMA_URL && !process.env.POSTGRES_URL) {
+  process.env.POSTGRES_URL = process.env.OBIAD_POSTGRES_PRISMA_URL;
+} else if (process.env.OBIAD_POSTGRES_URL && !process.env.POSTGRES_URL) {
   process.env.POSTGRES_URL = process.env.OBIAD_POSTGRES_URL;
 }
 

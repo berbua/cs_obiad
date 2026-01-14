@@ -12,6 +12,9 @@ function App() {
   const [visits, setVisits] = useState(0);
   const [guestbookEntries, setGuestbookEntries] = useState([]);
   const [musicPlaying, setMusicPlaying] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [previousSignupsCount, setPreviousSignupsCount] = useState(0);
+  const [previousLikesMap, setPreviousLikesMap] = useState({});
   
   // Form states
   const [nick, setNick] = useState('');
@@ -22,6 +25,28 @@ function App() {
   // Guestbook form states
   const [guestNick, setGuestNick] = useState('');
   const [guestComment, setGuestComment] = useState('');
+
+  // Request notification permission
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window) {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        setNotificationsEnabled(true);
+        showNotification('🔔 Powiadomienia włączone!', 'Będziesz dostawać powiadomienia o nowych zapisach i lajkach');
+      }
+    }
+  };
+
+  // Show notification
+  const showNotification = (title, body) => {
+    if (notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+      new Notification(title, {
+        body,
+        icon: '/vite.svg',
+        badge: '/vite.svg',
+      });
+    }
+  };
 
   // Load saved nick from localStorage on mount
   useEffect(() => {
@@ -34,6 +59,11 @@ function App() {
     if (savedGuestNick) {
       setGuestNick(savedGuestNick);
     }
+
+    // Check if notifications are already enabled
+    if ('Notification' in window && Notification.permission === 'granted') {
+      setNotificationsEnabled(true);
+    }
   }, []);
 
   // Fetch data on component mount
@@ -42,6 +72,56 @@ function App() {
     fetchVisits();
     fetchGuestbook();
   }, []);
+
+  // Poll for changes every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchSignupsWithNotifications();
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [previousSignupsCount, previousLikesMap, notificationsEnabled]);
+
+  const fetchSignupsWithNotifications = async () => {
+    try {
+      const response = await fetch(`${API_URL}/signups`);
+      const data = await response.json();
+      const newSignups = data.signups || [];
+      
+      // Check for new signups
+      if (notificationsEnabled && newSignups.length > previousSignupsCount) {
+        const newCount = newSignups.length - previousSignupsCount;
+        showNotification(
+          '🍕 Nowy zapis na obiad!',
+          `${newCount} ${newCount === 1 ? 'osoba zapisała się' : 'osób zapisało się'} na obiad!`
+        );
+      }
+
+      // Check for new likes
+      if (notificationsEnabled) {
+        newSignups.forEach(signup => {
+          const prevLikes = previousLikesMap[signup.id] || 0;
+          if (signup.likes > prevLikes) {
+            const newLikes = signup.likes - prevLikes;
+            showNotification(
+              '👍 Nowy lajk!',
+              `${signup.nick} dostał ${newLikes} ${newLikes === 1 ? 'nowy lajk' : 'nowe lajki'}!`
+            );
+          }
+        });
+      }
+
+      // Update previous values
+      setPreviousSignupsCount(newSignups.length);
+      const likesMap = {};
+      newSignups.forEach(s => likesMap[s.id] = s.likes || 0);
+      setPreviousLikesMap(likesMap);
+
+      setSignups(newSignups);
+    } catch (error) {
+      console.error('Error fetching signups:', error);
+    }
+  };
 
   const fetchSignups = async () => {
     try {
@@ -311,6 +391,14 @@ function App() {
           <button onClick={toggleMusic} className="music-btn">
             {musicPlaying ? '🔇 Wyłącz muzykę' : '🎵 Włącz muzykę'}
           </button>
+          {!notificationsEnabled && (
+            <button onClick={requestNotificationPermission} className="notification-btn">
+              🔔 Włącz powiadomienia
+            </button>
+          )}
+          {notificationsEnabled && (
+            <span className="notification-status">✅ Powiadomienia włączone</span>
+          )}
         </div>
         
         <div className="visitor-counter">

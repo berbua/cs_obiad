@@ -1,7 +1,11 @@
 const { sql } = require('@vercel/postgres');
 
-// Vercel Postgres - use standard environment variables
-// @vercel/postgres automatically uses POSTGRES_URL if available
+// Vercel Postgres - prefer pooled connection string
+// POSTGRES_PRISMA_URL is pooled, POSTGRES_URL is direct
+if (process.env.POSTGRES_PRISMA_URL && !process.env.POSTGRES_URL) {
+  process.env.POSTGRES_URL = process.env.POSTGRES_PRISMA_URL;
+}
+
 console.log('Postgres connection available:', !!process.env.POSTGRES_URL);
 
 // Initialize database tables

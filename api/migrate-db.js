@@ -1,16 +1,18 @@
 const { createPool } = require('@vercel/postgres');
 
-// Use standard Vercel Postgres connection string
-const connectionString = process.env.POSTGRES_URL || 
-                         process.env.POSTGRES_PRISMA_URL;
+// Use pooled connection string - PRISMA_URL is pooled, URL is direct
+const connectionString = process.env.POSTGRES_PRISMA_URL || 
+                         process.env.POSTGRES_URL;
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   
   try {
     if (!connectionString) {
-      throw new Error('No POSTGRES_URL or POSTGRES_PRISMA_URL found');
+      throw new Error('No POSTGRES_PRISMA_URL or POSTGRES_URL found');
     }
+
+    console.log('Using connection string type:', process.env.POSTGRES_PRISMA_URL ? 'PRISMA (pooled)' : 'URL (direct)');
 
     // Create a pool connection which works better with Vercel Postgres
     const pool = createPool({ connectionString });
@@ -25,7 +27,8 @@ module.exports = async (req, res) => {
       
       res.json({ 
         status: 'OK', 
-        message: 'Database migration completed! Likes column added to signups.'
+        message: 'Database migration completed! Likes column added to signups.',
+        connectionType: process.env.POSTGRES_PRISMA_URL ? 'pooled' : 'direct'
       });
     } finally {
       client.release();
@@ -36,7 +39,7 @@ module.exports = async (req, res) => {
       status: 'ERROR', 
       message: 'Failed to run migration',
       error: error.message,
-      hint: 'Check if POSTGRES_URL or POSTGRES_PRISMA_URL is set correctly'
+      hint: 'Make sure POSTGRES_PRISMA_URL is set (pooled connection string)'
     });
   }
 };

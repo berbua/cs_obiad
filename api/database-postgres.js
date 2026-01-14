@@ -36,6 +36,7 @@ async function initDatabase() {
         nick VARCHAR(100) NOT NULL,
         comment TEXT NOT NULL,
         date DATE NOT NULL DEFAULT CURRENT_DATE,
+        likes INTEGER NOT NULL DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
@@ -131,6 +132,22 @@ async function addGuestbookEntry(nick, comment) {
   }
 }
 
+// Increment likes for guestbook entry
+async function incrementGuestbookLikes(id) {
+  try {
+    const { rows } = await sql`
+      UPDATE guestbook 
+      SET likes = likes + 1 
+      WHERE id = ${id}
+      RETURNING likes
+    `;
+    return rows[0] ? rows[0].likes : 0;
+  } catch (error) {
+    console.error('Error incrementing likes:', error);
+    throw error;
+  }
+}
+
 // Cleanup old signups (for cron)
 async function cleanupOldSignups() {
   try {
@@ -149,5 +166,6 @@ module.exports = {
   getAndIncrementVisits,
   getGuestbookEntries,
   addGuestbookEntry,
+  incrementGuestbookLikes,
   cleanupOldSignups,
 };

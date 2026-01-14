@@ -135,6 +135,22 @@ function App() {
     }
   };
 
+  const handleLike = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/guestbook-like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      if (response.ok) {
+        await fetchGuestbook();
+      }
+    } catch (error) {
+      console.error('Error liking entry:', error);
+    }
+  };
+
   const toggleMusic = () => {
     const audio = document.getElementById('bgMusic');
     if (musicPlaying) {
@@ -275,6 +291,15 @@ function App() {
                     <span className="guest-date">{entry.date}</span>
                   </div>
                   <div className="guest-text">{entry.comment}</div>
+                  <div className="guest-likes">
+                    <button 
+                      className="like-btn" 
+                      onClick={() => handleLike(entry.id)}
+                      title="Polub wpis"
+                    >
+                      👍 {entry.likes || 0}
+                    </button>
+                  </div>
                 </div>
               ))
             )}

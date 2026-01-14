@@ -351,6 +351,36 @@ select:focus {
   font-size: 16px;
 }
 
+.guest-likes {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.like-btn {
+  background: linear-gradient(to bottom, #FFD700, #FFA500);
+  border: 2px outset #FFD700;
+  color: #8B4513;
+  padding: 6px 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.2s;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+.like-btn:hover {
+  background: linear-gradient(to bottom, #FFA500, #FF8C00);
+  transform: scale(1.1);
+  border: 2px outset #FFA500;
+}
+
+.like-btn:active {
+  border: 2px inset #FFD700;
+  transform: scale(0.95);
+}
+
 /* Footer */
 .footer {
   background: linear-gradient(to top, #000080, #0000FF);

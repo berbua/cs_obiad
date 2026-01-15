@@ -239,7 +239,7 @@ function App() {
     }
   };
 
-  const handleLike = async (id) => {
+  const handleLike = async (id, nick) => {
     try {
       const response = await fetch(`${API_URL}/signup-like`, {
         method: 'POST',
@@ -252,7 +252,7 @@ function App() {
           const animations = ['Pleased', 'Congratulate', 'GetAttention'];
           const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
           clippyAgent.current.play(randomAnimation);
-          clippyAgent.current.speak('Super! Ktoś dostał lajka! 👍');
+          clippyAgent.current.speak(`Super! ${nick} dostał lajka! 👍`);
         }
         await fetchSignups();
       }
@@ -326,7 +326,7 @@ function App() {
                     )}
                     <button 
                       className="like-btn signup-like-btn" 
-                      onClick={() => handleLike(signup.id)}
+                      onClick={() => handleLike(signup.id, signup.nick)}
                       title="Polub wpis"
                     >
                       👍 {signup.likes || 0}

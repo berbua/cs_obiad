@@ -9,7 +9,8 @@ const API_URL = import.meta.env.VITE_API_URL ||
   (import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:6001/api');
 
 function App() {
-  const { agent } = useClippyAgent();
+  const clippyData = useClippyAgent();
+  const agent = clippyData?.agent || null;
   const [signups, setSignups] = useState([]);
   const [visits, setVisits] = useState(0);
   const [guestbookEntries, setGuestbookEntries] = useState([]);

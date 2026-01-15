@@ -58,7 +58,7 @@ function validateSignup(data) {
   }
   
   // Mood icon validation - GG status
-  const allowedIcons = ['🟢', '🟡', '🔴']; // Zielony, Żółty, Czerwony - statusy GG
+  const allowedIcons = ['🟢', '🟡', '🔴', '🔵']; // Zielony, Żółty, Czerwony, Niebieski - statusy GG
   if (!data.moodIcon || !allowedIcons.includes(data.moodIcon)) {
     data.moodIcon = '🟢'; // Default - dostępny
   }

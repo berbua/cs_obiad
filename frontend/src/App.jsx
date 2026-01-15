@@ -188,6 +188,7 @@ function App() {
       case '🟢': return '/gg-icons/gg-green.svg';
       case '🟡': return '/gg-icons/gg-yellow.svg';
       case '🔴': return '/gg-icons/gg-red.svg';
+      case '🔵': return '/gg-icons/gg-blue.svg';
       default: return '/gg-icons/gg-green.svg';
     }
   };
@@ -548,8 +549,7 @@ function App() {
                     onChange={(e) => setMoodIcon(e.target.value)}
                   />
                   <span className="gg-status-icon green">
-                    <img src="/gg-icons/gg-green.svg" alt="Dostępny" className="gg-svg-icon" />
-                    <span className="gg-label">Dostępny</span>
+                    <img src="/gg-icons/gg-green.svg" alt="Zielony" className="gg-svg-icon" />
                   </span>
                 </label>
                 <label className={`mood-option gg-option ${moodIcon === '🟡' ? 'selected' : ''}`}>
@@ -561,8 +561,7 @@ function App() {
                     onChange={(e) => setMoodIcon(e.target.value)}
                   />
                   <span className="gg-status-icon yellow">
-                    <img src="/gg-icons/gg-yellow.svg" alt="Zaraz wracam" className="gg-svg-icon" />
-                    <span className="gg-label">Zaraz wracam</span>
+                    <img src="/gg-icons/gg-yellow.svg" alt="Żółty" className="gg-svg-icon" />
                   </span>
                 </label>
                 <label className={`mood-option gg-option ${moodIcon === '🔴' ? 'selected' : ''}`}>
@@ -574,8 +573,19 @@ function App() {
                     onChange={(e) => setMoodIcon(e.target.value)}
                   />
                   <span className="gg-status-icon red">
-                    <img src="/gg-icons/gg-red.svg" alt="Zajęty" className="gg-svg-icon" />
-                    <span className="gg-label">Zajęty</span>
+                    <img src="/gg-icons/gg-red.svg" alt="Czerwony" className="gg-svg-icon" />
+                  </span>
+                </label>
+                <label className={`mood-option gg-option ${moodIcon === '🔵' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="mood"
+                    value="🔵"
+                    checked={moodIcon === '🔵'}
+                    onChange={(e) => setMoodIcon(e.target.value)}
+                  />
+                  <span className="gg-status-icon blue">
+                    <img src="/gg-icons/gg-blue.svg" alt="Niebieski" className="gg-svg-icon" />
                   </span>
                 </label>
               </div>

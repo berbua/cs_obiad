@@ -367,19 +367,13 @@ select:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
 }
 
 .gg-svg-icon {
   width: 48px;
   height: 48px;
   display: block;
-}
-
-.gg-label {
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
 }
 
 .signup-gg-icon {

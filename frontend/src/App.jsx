@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import Clippy, { useClippyAgent } from '@kusainovv/react-clippy';
+import { Clippy, useClippyAgent } from '@kusainovv/react-clippy';
 import './styles.css';
 
 // Use environment variable for API URL

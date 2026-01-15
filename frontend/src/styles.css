@@ -12,6 +12,7 @@ body {
   background-attachment: fixed;
   color: #000;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* Add star pattern overlay */
@@ -526,13 +527,15 @@ select:focus {
   font-weight: bold;
   text-shadow: 0 0 10px #FF69B4, 2px 2px 0 rgba(0, 0, 0, 0.5);
   animation: heartbeat 1.5s ease-in-out infinite;
+  max-width: 100%;
+  word-wrap: break-word;
 }
 
 @keyframes heartbeat {
   0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.05); }
+  25% { transform: scale(1.02); }
   50% { transform: scale(1); }
-  75% { transform: scale(1.05); }
+  75% { transform: scale(1.02); }
 }
 
 .music-control {

@@ -17,6 +17,8 @@ function App() {
   const [previousSignupsCount, setPreviousSignupsCount] = useState(0);
   const [previousLikesMap, setPreviousLikesMap] = useState({});
   const [cursorTrailsEnabled, setCursorTrailsEnabled] = useState(false);
+  const [showHomepagePopup, setShowHomepagePopup] = useState(false);
+  const [yesButtonPosition, setYesButtonPosition] = useState({ top: 120, left: 100 });
   
   // Form states
   const [nick, setNick] = useState('');
@@ -110,6 +112,19 @@ function App() {
 
     return () => clearInterval(interval);
   }, [previousSignupsCount, previousLikesMap, notificationsEnabled]);
+
+  // Show homepage popup after 1 minute
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowHomepagePopup(true);
+      if (clippyAgent.current) {
+        clippyAgent.current.play('GetAttention');
+        clippyAgent.current.speak('Hej! Widzę, że podoba Ci się nasza strona! 😊 Może ustaw ją jako swoją stronę startową?');
+      }
+    }, 60000); // 60 seconds = 1 minute
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const fetchSignupsWithNotifications = async () => {
     try {
@@ -429,6 +444,51 @@ function App() {
     }
   };
 
+  // Homepage popup handlers
+  const handleYesButtonHover = (e) => {
+    const popup = e.target.closest('.homepage-popup-content');
+    if (!popup) return;
+    
+    const popupRect = popup.getBoundingClientRect();
+    const maxTop = popupRect.height - 60;
+    const maxLeft = popupRect.width - 120;
+    
+    // Random position, but keep button inside popup
+    const newTop = Math.max(40, Math.min(maxTop, Math.random() * maxTop));
+    const newLeft = Math.max(20, Math.min(maxLeft, Math.random() * maxLeft));
+    
+    setYesButtonPosition({ top: newTop, left: newLeft });
+    
+    if (clippyAgent.current && Math.random() > 0.7) {
+      const messages = [
+        'Haha! Nie tak szybko! 😄',
+        'Ups! Spróbuj jeszcze raz! 😏',
+        'Prawie! Ale nie tym razem! 😁',
+        'Zwinny jesteś! Ale ja jestem zwinniejszy! 🏃',
+        'To jest zabawniejsze niż myślałem! 😂'
+      ];
+      clippyAgent.current.speak(messages[Math.floor(Math.random() * messages.length)]);
+    }
+  };
+
+  const handleNoClick = () => {
+    setShowHomepagePopup(false);
+    if (clippyAgent.current) {
+      clippyAgent.current.play('Sad');
+      clippyAgent.current.speak('Oj... Szkoda... No ale rozumiem. 😢 Może następnym razem!');
+    }
+  };
+
+  const handleYesClick = () => {
+    // This should never happen, but just in case
+    alert('Gratulacje! Udało Ci się kliknąć! 🎉\n\n...ale tak naprawdę nie możemy ustawić strony startowej bez Twojej zgody. 😊');
+    setShowHomepagePopup(false);
+    if (clippyAgent.current) {
+      clippyAgent.current.play('Congratulate');
+      clippyAgent.current.speak('Wow! Udało Ci się! Jesteś mistrzem klikania! 🏆');
+    }
+  };
+
   return (
     <div className="app">
       {/* Header with WordArt style */}
@@ -723,6 +783,51 @@ function App() {
       <audio id="bgMusic" loop>
         <source src="/music/83326-nokia-tune.mp3" type="audio/mpeg" />
       </audio>
+
+      {/* Homepage Popup */}
+      {showHomepagePopup && (
+        <div className="homepage-popup-overlay">
+          <div className="homepage-popup-content">
+            <div className="popup-titlebar">
+              <div className="popup-title">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAVElEQVR4nGNgoBAwUqifgRhNDAwMDP8h+D8uNXgN+E+EATiD4D8VA4gy4D+JBhBlwH8SDfhPhQH/qTTgP40G/KfDgP8MNDDgPzWDAYcBZBmAzwAAKjMQGm8ZDaUAAAAASUVORK5CYII=" alt="IE Icon" />
+                Internet Explorer
+              </div>
+              <button className="popup-close" onClick={handleNoClick}>×</button>
+            </div>
+            
+            <div className="popup-body">
+              <div className="popup-icon">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABNklEQVR4nO2YQQ6CMBBFP4lH8Apezoug4gG8gkdwqbozcWOEaWkLtDPzk9k0Tbv4+KcFIcQfUQKzG2AM3IBb2hS4A5MbYArsUgA9YJ8CaAP7FEAb2KcA2sA+BdAG9imANrBPAbSBfQqgDexTAG1gnwJoA/sUQBvYpwDawD4F0Ab2KYA2sE8BtIF9CqAN7FMAbWCfAmgD+xRAG9inANrAPgXQBvYpgDawTwG0gX0KoA3sUwBtYJ8CaAP7FEAb2KcA2sA+BdAG9imANrBPAbSBfQqgDexTAG1gnwJoA/sUQBvYpwDawD4F0Ab2KYA2sE8BtIF9CqAN7FMAbWCfAmgD+xRAG9inANrAPgXQBvYpgDawTwG0gX0KoA3sUwBtYJ8CaAP7FEAb2KcA2sA+BdAG9imANrBPAfwjngE3kVYGxwAAAABJRU5ErkJggg==" alt="Question" />
+              </div>
+              
+              <div className="popup-message">
+                <h3>Ustaw stronę startową</h3>
+                <p>Czy chcesz ustawić <strong>CS OBIAD TEAM</strong> jako swoją stronę startową?</p>
+                <p className="popup-subtext">Ta strona prosi o pozwolenie na ustawienie jako strona startowa przeglądarki.</p>
+              </div>
+            </div>
+            
+            <div className="popup-buttons">
+              <button 
+                className="popup-btn popup-btn-yes" 
+                style={{
+                  position: 'absolute',
+                  top: `${yesButtonPosition.top}px`,
+                  left: `${yesButtonPosition.left}px`
+                }}
+                onMouseEnter={handleYesButtonHover}
+                onClick={handleYesClick}
+              >
+                Tak
+              </button>
+              <button className="popup-btn popup-btn-no" onClick={handleNoClick}>
+                Nie
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

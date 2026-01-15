@@ -21,7 +21,7 @@
         trail.style.cssText = `
           position: fixed;
           pointer-events: none;
-          font-size: 20px;
+          font-size: 32px;
           opacity: 0;
           z-index: 9999;
           transition: opacity 0.3s;
@@ -81,8 +81,8 @@
     
     animate: function() {
       trails.forEach((trail, index) => {
-        trail.element.style.left = (trail.x - 10) + 'px';
-        trail.element.style.top = (trail.y - 10) + 'px';
+        trail.element.style.left = (trail.x - 16) + 'px';
+        trail.element.style.top = (trail.y - 16) + 'px';
         trail.element.style.opacity = isEnabled ? trail.opacity : 0;
         
         // Slight random movement for more dynamic effect

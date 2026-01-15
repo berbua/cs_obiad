@@ -165,8 +165,35 @@ function App() {
     }
   };
 
+  // Security check - detect malicious input
+  const checkForMaliciousInput = (input) => {
+    const maliciousPatterns = [
+      /<script/i,
+      /<iframe/i,
+      /javascript:/i,
+      /on\w+\s*=/i,
+      /<img.*onerror/i,
+      /eval\(/i,
+      /alert\(/i,
+      /document\.cookie/i,
+      /window\.location/i,
+    ];
+    
+    return maliciousPatterns.some(pattern => pattern.test(input));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Security check for malicious input
+    if (checkForMaliciousInput(nick) || checkForMaliciousInput(comment)) {
+      if (clippyAgent.current) {
+        clippyAgent.current.play('Wave');
+        clippyAgent.current.speak('Hola hola! Nie ze mną te numery! 🚫 Widzę co próbujesz zrobić, hakerze! 👀');
+      }
+      alert('⚠️ Wykryto podejrzaną treść! Nice try, ale Clippy Cię pilnuje! 😎');
+      return;
+    }
     
     // Client-side validation
     if (!nick || nick.trim().length < 2) {
@@ -175,16 +202,28 @@ function App() {
     }
     
     if (nick.length > 50) {
+      if (clippyAgent.current) {
+        clippyAgent.current.play('GetAttention');
+        clippyAgent.current.speak('Spokojnie! Ten nick jest za długi! Może coś krótszego? 📏');
+      }
       alert('⚠️ Nick może mieć maksymalnie 50 znaków!');
       return;
     }
     
     if (time && time.length > 20) {
+      if (clippyAgent.current) {
+        clippyAgent.current.play('Wave');
+        clippyAgent.current.speak('Ta godzina jest podejrzanie długa... 🤔');
+      }
       alert('⚠️ Godzina może mieć maksymalnie 20 znaków!');
       return;
     }
     
     if (comment && comment.length > 200) {
+      if (clippyAgent.current) {
+        clippyAgent.current.play('GetAttention');
+        clippyAgent.current.speak('Wow! To esej czy komentarz? Skróć trochę! ✂️');
+      }
       alert('⚠️ Komentarz może mieć maksymalnie 200 znaków!');
       return;
     }
@@ -231,6 +270,16 @@ function App() {
   const handleGuestbookSubmit = async (e) => {
     e.preventDefault();
     
+    // Security check for malicious input
+    if (checkForMaliciousInput(guestNick) || checkForMaliciousInput(guestComment)) {
+      if (clippyAgent.current) {
+        clippyAgent.current.play('Wave');
+        clippyAgent.current.speak('Stop! 🛑 Wykryłem podejrzany kod! Myślisz że jestem z wczoraj? 🤨');
+      }
+      alert('⚠️ Wykryto podejrzaną treść! Clippy Security™ na posterunku! 🔒');
+      return;
+    }
+    
     // Client-side validation
     if (!guestNick || guestNick.trim().length < 2) {
       alert('⚠️ Nick musi mieć minimum 2 znaki!');
@@ -238,6 +287,10 @@ function App() {
     }
     
     if (guestNick.length > 50) {
+      if (clippyAgent.current) {
+        clippyAgent.current.play('GetAttention');
+        clippyAgent.current.speak('Ten nick jest za długi! Może coś krótsz... krótszego? 😅');
+      }
       alert('⚠️ Nick może mieć maksymalnie 50 znaków!');
       return;
     }
@@ -248,6 +301,10 @@ function App() {
     }
     
     if (guestComment.length > 500) {
+      if (clippyAgent.current) {
+        clippyAgent.current.play('GetAttention');
+        clippyAgent.current.speak('To już nie komentarz, to książka! Skróć proszę! 📚➡️📄');
+      }
       alert('⚠️ Komentarz może mieć maksymalnie 500 znaków!');
       return;
     }

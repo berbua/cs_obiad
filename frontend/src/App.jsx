@@ -16,6 +16,7 @@ function App() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [previousSignupsCount, setPreviousSignupsCount] = useState(0);
   const [previousLikesMap, setPreviousLikesMap] = useState({});
+  const [cursorTrailsEnabled, setCursorTrailsEnabled] = useState(false);
   
   // Form states
   const [nick, setNick] = useState('');
@@ -75,6 +76,22 @@ function App() {
           agent.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
         });
       }
+      
+      // Setup callback for fast mouse movement
+      window.clippyFastMovement = function() {
+        if (clippyAgent.current) {
+          const messages = [
+            'Hej! Spokojnie! Kręci mi się w głowie! 😵',
+            'Zwolnij trochę! To nie wyścigi! 🏎️',
+            'Auć! Za szybko! Dostałem zawrotów głowy! 💫',
+            'Slow down! Nie jestem spinaczem wyścigowym! 🌀',
+            'Moja głowa! Stop machaniu myszką jak szalony! 😵‍💫'
+          ];
+          const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+          clippyAgent.current.play('Wave');
+          clippyAgent.current.speak(randomMessage);
+        }
+      };
     }, 500);
   }, []);
 
@@ -381,6 +398,26 @@ function App() {
     }
   };
 
+  const toggleCursorTrails = () => {
+    if (window.CursorTrails) {
+      if (cursorTrailsEnabled) {
+        window.CursorTrails.disable();
+        setCursorTrailsEnabled(false);
+        if (clippyAgent.current) {
+          clippyAgent.current.play('Wave');
+          clippyAgent.current.speak('Uff! W końcu spokój! Te gwiazdki mnie męczyły! 😮‍💨');
+        }
+      } else {
+        window.CursorTrails.enable();
+        setCursorTrailsEnabled(true);
+        if (clippyAgent.current) {
+          clippyAgent.current.play('GetTechy');
+          clippyAgent.current.speak('Wow! Gwiazdki! To prawdziwy retro feeling! ✨ Tylko nie machaj za szybko!');
+        }
+      }
+    }
+  };
+
   return (
     <div className="app">
       {/* Header with WordArt style */}
@@ -404,6 +441,13 @@ function App() {
             <span className="notification-status-top">✅ Powiadomienia są włączone!</span>
           </div>
         )}
+        
+        {/* Cursor Trails Toggle */}
+        <div className="cursor-trails-banner">
+          <button onClick={toggleCursorTrails} className="cursor-trails-btn">
+            {cursorTrailsEnabled ? '✨ WYŁĄCZ GWIAZDKI ✨' : '⭐ WŁĄCZ GWIAZDKI! ⭐'}
+          </button>
+        </div>
       </header>
 
       {/* Main content */}

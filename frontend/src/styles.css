@@ -551,6 +551,65 @@ select:focus {
   background: linear-gradient(to bottom, #00FF00, #008800);
 }
 
+/* Cursor Trails Toggle */
+.cursor-trails-banner {
+  margin-top: 15px;
+  padding: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 3px solid #FFD700;
+  border-radius: 10px;
+}
+
+.cursor-trails-btn {
+  background: linear-gradient(to bottom, #FFD700, #FFA500);
+  border: 3px solid #FF1493;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Comic Sans MS', cursive;
+  color: #000;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.cursor-trails-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(255, 215, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: linear-gradient(to bottom, #FFA500, #FFD700);
+}
+
+.cursor-trails-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes sparkle {
+  0%, 100% { 
+    filter: brightness(1);
+  }
+  50% { 
+    filter: brightness(1.2);
+  }
+}
+
+/* Cursor trail elements */
+.cursor-trail {
+  animation: trail-fade 0.5s ease-out forwards;
+}
+
+@keyframes trail-fade {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    transform: scale(0.5) rotate(180deg);
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .wordart {

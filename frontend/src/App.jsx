@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { Clippy, useClippyAgent } from '@kusainovv/react-clippy';
 import './styles.css';
 
 // Use environment variable for API URL
@@ -9,8 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL ||
   (import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:6001/api');
 
 function App() {
-  const clippyData = useClippyAgent();
-  const agent = clippyData?.agent || null;
+  const clippyAgent = useRef(null);
   const [signups, setSignups] = useState([]);
   const [visits, setVisits] = useState(0);
   const [guestbookEntries, setGuestbookEntries] = useState([]);
@@ -68,11 +66,17 @@ function App() {
       setNotificationsEnabled(true);
     }
 
-    // Greet with Clippy when agent is ready
-    if (agent) {
-      agent.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
-    }
-  }, [agent]);
+    // Load Clippy after a short delay to ensure jQuery is loaded
+    setTimeout(() => {
+      if (window.clippy) {
+        window.clippy.load('Clippy', function(agent) {
+          clippyAgent.current = agent;
+          agent.show();
+          agent.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
+        });
+      }
+    }, 500);
+  }, []);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -180,9 +184,9 @@ function App() {
 
       if (response.ok) {
         alert('✅ Zapisano na obiad!');
-        if (agent) {
-          agent.play('Congratulate');
-          agent.speak('Świetnie! Zapisano Cię na obiad! Smacznego! 🍕');
+        if (clippyAgent.current) {
+          clippyAgent.current.play('Congratulate');
+          clippyAgent.current.speak('Świetnie! Zapisano Cię na obiad! Smacznego! 🍕');
         }
         setTime('');
         setComment('');
@@ -190,9 +194,9 @@ function App() {
         await fetchSignups();
       } else {
         alert('❌ Błąd! Nie udało się zapisać.');
-        if (agent) {
-          agent.play('Wave');
-          agent.speak('Ups! Coś poszło nie tak. Spróbuj ponownie!');
+        if (clippyAgent.current) {
+          clippyAgent.current.play('Wave');
+          clippyAgent.current.speak('Ups! Coś poszło nie tak. Spróbuj ponownie!');
         }
       }
     } catch (error) {
@@ -220,9 +224,9 @@ function App() {
 
       if (response.ok) {
         alert('✅ Wpis dodany do księgi gości!');
-        if (agent) {
-          agent.play('GetAttention');
-          agent.speak('Dziękuję za wpis w księdze gości! 📝');
+        if (clippyAgent.current) {
+          clippyAgent.current.play('GetAttention');
+          clippyAgent.current.speak('Dziękuję za wpis w księdze gości! 📝');
         }
         setGuestComment('');
         await fetchGuestbook();
@@ -244,11 +248,11 @@ function App() {
       });
 
       if (response.ok) {
-        if (agent) {
+        if (clippyAgent.current) {
           const animations = ['Pleased', 'Congratulate', 'GetAttention'];
           const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
-          agent.play(randomAnimation);
-          agent.speak('Super! Ktoś dostał lajka! 👍');
+          clippyAgent.current.play(randomAnimation);
+          clippyAgent.current.speak('Super! Ktoś dostał lajka! 👍');
         }
         await fetchSignups();
       }
@@ -262,16 +266,16 @@ function App() {
     if (musicPlaying) {
       audio.pause();
       setMusicPlaying(false);
-      if (agent) {
-        agent.play('Wave');
-        agent.speak('No dobra, cisza... 🔇');
+      if (clippyAgent.current) {
+        clippyAgent.current.play('Wave');
+        clippyAgent.current.speak('No dobra, cisza... 🔇');
       }
     } else {
       audio.play();
       setMusicPlaying(true);
-      if (agent) {
-        agent.play('GetTechy');
-        agent.speak('O tak! Nokia Tune! Klasyka! 🎵');
+      if (clippyAgent.current) {
+        clippyAgent.current.play('GetTechy');
+        clippyAgent.current.speak('O tak! Nokia Tune! Klasyka! 🎵');
       }
     }
   };
@@ -462,9 +466,6 @@ function App() {
       <audio id="bgMusic" loop>
         <source src="/music/83326-nokia-tune.mp3" type="audio/mpeg" />
       </audio>
-
-      {/* Clippy Assistant */}
-      <Clippy name="Clippy" />
     </div>
   );
 }

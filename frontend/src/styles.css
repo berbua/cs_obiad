@@ -519,6 +519,22 @@ select:focus {
   font-style: italic;
 }
 
+.footer-dedication {
+  font-size: 18px;
+  margin-top: 10px;
+  color: #FFB6C1;
+  font-weight: bold;
+  text-shadow: 0 0 10px #FF69B4, 2px 2px 0 rgba(0, 0, 0, 0.5);
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.05); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.05); }
+}
+
 .music-control {
   margin-bottom: 20px;
   display: flex;

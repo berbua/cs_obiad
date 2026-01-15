@@ -248,7 +248,7 @@ function App() {
       <header className="header">
         <h1 className="wordart">CS OBIAD TEAM</h1>
         <div className="marquee">
-          <span>🍕 Witamy na stronie obiadowej! 🍔 Zapisz się na obiad już dziś! 🌯 Bon appetit! 🥗</span>
+          <span>🍕 Na górze róże 🍔 Na dole koń i miś  🌯 Zapisz się na obiad już dziś! 🥗</span>
         </div>
         
         {/* Notification banner */}
@@ -418,6 +418,9 @@ function App() {
 
         <p className="footer-text">
           © 2000 OBIAD TEAM - Best viewed in Netscape Navigator 4.0 
+        </p>
+        <p className="footer-dedication">
+          From Kasia & Jonasz for CS with ❤️
         </p>
       </footer>
 

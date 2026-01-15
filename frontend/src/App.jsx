@@ -208,6 +208,20 @@ function App() {
     }
   };
 
+  // Format date to show only date without time
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('pl-PL', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   // Security check - detect malicious input
   const checkForMaliciousInput = (input) => {
     const maliciousPatterns = [
@@ -690,7 +704,7 @@ function App() {
                 <div key={entry.id} className="guest-entry">
                   <div className="guest-header">
                     <strong>{entry.nick}</strong>
-                    <span className="guest-date">{entry.date}</span>
+                    <span className="guest-date">{formatDate(entry.date)}</span>
                   </div>
                   <div className="guest-text">{entry.comment}</div>
                 </div>

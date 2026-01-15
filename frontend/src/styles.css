@@ -58,6 +58,85 @@ body::before {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 
+/* Notification Banner */
+.notification-banner {
+  margin-top: 20px;
+  padding: 15px;
+  background: linear-gradient(45deg, #FF00FF, #00FFFF, #FF00FF, #00FFFF);
+  background-size: 400% 400%;
+  animation: gradientShift 3s ease infinite;
+  border: 5px outset #FFD700;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.8);
+}
+
+.notification-banner.enabled {
+  background: linear-gradient(45deg, #00FF00, #00CC00);
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.notification-btn-top {
+  background: linear-gradient(to bottom, #FFFF00, #FFD700);
+  color: #FF0000;
+  font-size: 28px;
+  font-weight: bold;
+  font-family: 'Comic Sans MS', cursive;
+  padding: 20px 40px;
+  border: 6px outset #FFD700;
+  border-radius: 15px;
+  cursor: pointer;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+  transition: all 0.3s;
+  display: block;
+  width: 100%;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.notification-btn-top:hover {
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 0 50px rgba(255, 255, 0, 1);
+  animation: none;
+}
+
+.notification-btn-top:active {
+  border-style: inset;
+  transform: scale(0.95);
+}
+
+.notification-subtitle {
+  display: block;
+  font-size: 16px;
+  margin-top: 8px;
+  color: #8B4513;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.notification-status-top {
+  color: #FFFF00;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0 0 10px #00FF00, 2px 2px 0 rgba(0, 0, 0, 0.5);
+  display: block;
+  animation: glow 1.5s ease-in-out infinite;
+}
+
 .wordart {
   font-size: 72px;
   font-weight: bold;
@@ -449,20 +528,8 @@ select:focus {
   flex-wrap: wrap;
 }
 
-.music-btn,
-.notification-btn {
+.music-btn {
   background: linear-gradient(to bottom, #00FF00, #008800);
-}
-
-.notification-btn {
-  background: linear-gradient(to bottom, #FFA500, #FF8C00);
-}
-
-.notification-status {
-  color: #00FF00;
-  font-size: 18px;
-  font-weight: bold;
-  text-shadow: 0 0 10px #00FF00;
 }
 
 /* Responsive */

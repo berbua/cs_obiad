@@ -250,6 +250,21 @@ function App() {
         <div className="marquee">
           <span>🍕 Witamy na stronie obiadowej! 🍔 Zapisz się na obiad już dziś! 🌯 Bon appetit! 🥗</span>
         </div>
+        
+        {/* Notification banner */}
+        {!notificationsEnabled && (
+          <div className="notification-banner">
+            <button onClick={requestNotificationPermission} className="notification-btn-top">
+              🔔 WŁĄCZ POWIADOMIENIA! 🔔
+              <span className="notification-subtitle">Dowiedz się o nowych zapisach i lajkach!</span>
+            </button>
+          </div>
+        )}
+        {notificationsEnabled && (
+          <div className="notification-banner enabled">
+            <span className="notification-status-top">✅ Powiadomienia są włączone!</span>
+          </div>
+        )}
       </header>
 
       {/* Main content */}
@@ -391,14 +406,6 @@ function App() {
           <button onClick={toggleMusic} className="music-btn">
             {musicPlaying ? '🔇 Wyłącz muzykę' : '🎵 Włącz muzykę'}
           </button>
-          {!notificationsEnabled && (
-            <button onClick={requestNotificationPermission} className="notification-btn">
-              🔔 Włącz powiadomienia
-            </button>
-          )}
-          {notificationsEnabled && (
-            <span className="notification-status">✅ Powiadomienia włączone</span>
-          )}
         </div>
         
         <div className="visitor-counter">

@@ -18,7 +18,7 @@ function App() {
   const [previousLikesMap, setPreviousLikesMap] = useState({});
   const [cursorTrailsEnabled, setCursorTrailsEnabled] = useState(false);
   const [showHomepagePopup, setShowHomepagePopup] = useState(false);
-  const [yesButtonPosition, setYesButtonPosition] = useState({ top: 120, left: 100 });
+  const [yesButtonPosition, setYesButtonPosition] = useState({ top: 10, left: 20 });
   
   // Form states
   const [nick, setNick] = useState('');

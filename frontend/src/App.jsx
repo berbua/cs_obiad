@@ -64,6 +64,14 @@ function App() {
     if ('Notification' in window && Notification.permission === 'granted') {
       setNotificationsEnabled(true);
     }
+
+    // Initialize Clippy
+    if (window.clippy) {
+      window.clippy.load('Clippy', function(agent) {
+        agent.show();
+        agent.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
+      });
+    }
   }, []);
 
   // Fetch data on component mount
@@ -172,12 +180,22 @@ function App() {
 
       if (response.ok) {
         alert('✅ Zapisano na obiad!');
+        // Clippy celebration
+        if (window.clippy) {
+          window.clippy._agents[0]?.play('Congratulate');
+          window.clippy._agents[0]?.speak('Świetnie! Zapisano Cię na obiad! Smacznego! 🍕');
+        }
         setTime('');
         setComment('');
         setMoodIcon('🍕');
         await fetchSignups();
       } else {
         alert('❌ Błąd! Nie udało się zapisać.');
+        // Clippy error reaction
+        if (window.clippy) {
+          window.clippy._agents[0]?.play('Wave');
+          window.clippy._agents[0]?.speak('Ups! Coś poszło nie tak. Spróbuj ponownie!');
+        }
       }
     } catch (error) {
       console.error('Error adding signup:', error);
@@ -204,6 +222,11 @@ function App() {
 
       if (response.ok) {
         alert('✅ Wpis dodany do księgi gości!');
+        // Clippy reaction for guestbook entry
+        if (window.clippy) {
+          window.clippy._agents[0]?.play('GetAttention');
+          window.clippy._agents[0]?.speak('Dziękuję za wpis w księdze gości! 📝');
+        }
         setGuestComment('');
         await fetchGuestbook();
       } else {
@@ -224,6 +247,12 @@ function App() {
       });
 
       if (response.ok) {
+        // Clippy reaction for like
+        if (window.clippy) {
+          const animations = ['Pleased', 'Congratulate', 'GetAttention'];
+          const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+          window.clippy._agents[0]?.play(randomAnimation);
+        }
         await fetchSignups();
       }
     } catch (error) {
@@ -236,9 +265,19 @@ function App() {
     if (musicPlaying) {
       audio.pause();
       setMusicPlaying(false);
+      // Clippy reaction for stopping music
+      if (window.clippy) {
+        window.clippy._agents[0]?.play('Wave');
+        window.clippy._agents[0]?.speak('No dobra, cisza... 🔇');
+      }
     } else {
       audio.play();
       setMusicPlaying(true);
+      // Clippy reaction for playing music
+      if (window.clippy) {
+        window.clippy._agents[0]?.play('GetTechy');
+        window.clippy._agents[0]?.speak('O tak! Nokia Tune! Klasyka! 🎵');
+      }
     }
   };
 

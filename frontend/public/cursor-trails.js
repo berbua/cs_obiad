@@ -6,7 +6,7 @@
   let lastY = 0;
   let lastTime = Date.now();
   let isMovingFast = false;
-  const MAX_TRAILS = 15;
+  const MAX_TRAILS = 30; // Zwiększono z 15 do 30
   
   // Trail emoji/icons
   const trailIcons = ['⭐', '✨', '💫', '🌟', '⚡', '💥'];

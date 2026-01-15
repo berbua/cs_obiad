@@ -445,7 +445,7 @@ function App() {
         {/* Cursor Trails Toggle */}
         <div className="cursor-trails-banner">
           <button onClick={toggleCursorTrails} className="cursor-trails-btn">
-            {cursorTrailsEnabled ? '✨ WYŁĄCZ GWIAZDKI ✨' : '⭐ WŁĄCZ GWIAZDKI! ⭐'}
+            {cursorTrailsEnabled ? '✨ WYŁĄCZ GWIAZDNY KURSOR ✨' : '⭐ WŁĄCZ GWIAZDNY KURSOR! ⭐'}
           </button>
         </div>
       </header>

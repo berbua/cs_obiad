@@ -1,4 +1,5 @@
 const db = require('./_db');
+const { validateLikeRequest } = require('./validator');
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -12,12 +13,15 @@ module.exports = async (req, res) => {
 
   if (req.method === 'POST') {
     try {
-      const { id } = req.body;
+      const validation = validateLikeRequest(req.body);
       
-      if (!id) {
-        return res.status(400).json({ error: 'Signup ID is required' });
+      if (!validation.valid) {
+        return res.status(400).json({ 
+          error: validation.errors.join(', ') 
+        });
       }
 
+      const { id } = validation.data;
       const likes = await db.incrementSignupLikes(id);
       return res.json({ success: true, likes });
     } catch (error) {

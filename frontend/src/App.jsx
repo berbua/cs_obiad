@@ -167,19 +167,41 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!nick) {
-      alert('⚠️ Musisz podać nick!');
+    
+    // Client-side validation
+    if (!nick || nick.trim().length < 2) {
+      alert('⚠️ Nick musi mieć minimum 2 znaki!');
+      return;
+    }
+    
+    if (nick.length > 50) {
+      alert('⚠️ Nick może mieć maksymalnie 50 znaków!');
+      return;
+    }
+    
+    if (time && time.length > 20) {
+      alert('⚠️ Godzina może mieć maksymalnie 20 znaków!');
+      return;
+    }
+    
+    if (comment && comment.length > 200) {
+      alert('⚠️ Komentarz może mieć maksymalnie 200 znaków!');
       return;
     }
 
     // Save nick to localStorage for future use
-    localStorage.setItem('obiad_nick', nick);
+    localStorage.setItem('obiad_nick', nick.trim());
 
     try {
       const response = await fetch(`${API_URL}/signups`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nick, time, comment, moodIcon }),
+        body: JSON.stringify({ 
+          nick: nick.trim(), 
+          time: time.trim(), 
+          comment: comment.trim(), 
+          moodIcon 
+        }),
       });
 
       if (response.ok) {
@@ -193,7 +215,8 @@ function App() {
         setMoodIcon('🍕');
         await fetchSignups();
       } else {
-        alert('❌ Błąd! Nie udało się zapisać.');
+        const errorData = await response.json();
+        alert(`❌ Błąd! ${errorData.error || 'Nie udało się zapisać.'}`);
         if (clippyAgent.current) {
           clippyAgent.current.play('Wave');
           clippyAgent.current.speak('Ups! Coś poszło nie tak. Spróbuj ponownie!');
@@ -207,19 +230,39 @@ function App() {
 
   const handleGuestbookSubmit = async (e) => {
     e.preventDefault();
-    if (!guestNick || !guestComment) {
-      alert('⚠️ Musisz podać nick i komentarz!');
+    
+    // Client-side validation
+    if (!guestNick || guestNick.trim().length < 2) {
+      alert('⚠️ Nick musi mieć minimum 2 znaki!');
+      return;
+    }
+    
+    if (guestNick.length > 50) {
+      alert('⚠️ Nick może mieć maksymalnie 50 znaków!');
+      return;
+    }
+    
+    if (!guestComment || guestComment.trim().length < 3) {
+      alert('⚠️ Komentarz musi mieć minimum 3 znaki!');
+      return;
+    }
+    
+    if (guestComment.length > 500) {
+      alert('⚠️ Komentarz może mieć maksymalnie 500 znaków!');
       return;
     }
 
     // Save guest nick to localStorage
-    localStorage.setItem('obiad_guest_nick', guestNick);
+    localStorage.setItem('obiad_guest_nick', guestNick.trim());
 
     try {
       const response = await fetch(`${API_URL}/guestbook`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nick: guestNick, comment: guestComment }),
+        body: JSON.stringify({ 
+          nick: guestNick.trim(), 
+          comment: guestComment.trim() 
+        }),
       });
 
       if (response.ok) {
@@ -231,7 +274,8 @@ function App() {
         setGuestComment('');
         await fetchGuestbook();
       } else {
-        alert('❌ Błąd! Nie udało się dodać wpisu.');
+        const errorData = await response.json();
+        alert(`❌ Błąd! ${errorData.error || 'Nie udało się dodać wpisu.'}`);
       }
     } catch (error) {
       console.error('Error adding guestbook entry:', error);
@@ -349,7 +393,9 @@ function App() {
                 value={nick}
                 onChange={(e) => setNick(e.target.value)}
                 placeholder="Twój nick..."
-                maxLength={30}
+                required
+                minLength={2}
+                maxLength={50}
               />
             </div>
 
@@ -360,7 +406,7 @@ function App() {
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
                 placeholder="np. 12:30"
-                maxLength={5}
+                maxLength={20}
               />
             </div>
 
@@ -371,7 +417,7 @@ function App() {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="np. 'Mam ochotę na pizzę!'"
-                maxLength={100}
+                maxLength={200}
               />
             </div>
 
@@ -408,14 +454,18 @@ function App() {
               value={guestNick}
               onChange={(e) => setGuestNick(e.target.value)}
               placeholder="Twój nick..."
-              maxLength={30}
+              required
+              minLength={2}
+              maxLength={50}
             />
             <input
               type="text"
               value={guestComment}
               onChange={(e) => setGuestComment(e.target.value)}
               placeholder="Twoja opinia o obiedzie..."
-              maxLength={200}
+              required
+              minLength={3}
+              maxLength={500}
             />
             <button type="submit" className="guest-btn">✏️ Dodaj wpis</button>
           </form>

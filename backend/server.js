@@ -3,6 +3,8 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const { validateSignup, validateGuestbookEntry, validateLikeRequest } = require('./validator');
 
 // Use JSON database by default for simplicity
 // Set USE_JSON_DB=false in environment to use SQLite
@@ -30,9 +32,24 @@ if (!useJsonDb) {
 const app = express();
 const PORT = process.env.PORT || 6001;
 
+// Rate limiting - max 100 requests per 15 minutes per IP
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: { error: 'Zbyt wiele żądań, spróbuj ponownie za chwilę' }
+});
+
+// Stricter rate limit for POST requests - max 20 per 15 minutes
+const postLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { error: 'Zbyt wiele zapisów, poczekaj chwilę' }
+});
+
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10kb' })); // Limit JSON payload size
+app.use(limiter);
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -59,15 +76,18 @@ app.get('/api/signups', (req, res) => {
   }
 });
 
-app.post('/api/signups', (req, res) => {
+app.post('/api/signups', postLimiter, (req, res) => {
   try {
-    const { nick, time, comment, moodIcon } = req.body;
+    const validation = validateSignup(req.body);
     
-    if (!nick) {
-      return res.status(400).json({ error: 'Nick is required' });
+    if (!validation.valid) {
+      return res.status(400).json({ 
+        error: validation.errors.join(', ') 
+      });
     }
 
-    const result = addSignup(nick, time || '', comment || '', moodIcon || '🍕');
+    const { nick, time, comment, moodIcon } = validation.data;
+    const result = addSignup(nick, time, comment, moodIcon);
     res.json({ success: true, id: result.lastInsertRowid });
   } catch (error) {
     console.error('Error adding signup:', error);
@@ -95,14 +115,17 @@ app.get('/api/guestbook', (req, res) => {
   }
 });
 
-app.post('/api/guestbook', (req, res) => {
+app.post('/api/guestbook', postLimiter, (req, res) => {
   try {
-    const { nick, comment } = req.body;
+    const validation = validateGuestbookEntry(req.body);
     
-    if (!nick || !comment) {
-      return res.status(400).json({ error: 'Nick and comment are required' });
+    if (!validation.valid) {
+      return res.status(400).json({ 
+        error: validation.errors.join(', ') 
+      });
     }
 
+    const { nick, comment } = validation.data;
     const result = addGuestbookEntry(nick, comment);
     res.json({ success: true, id: result.lastInsertRowid });
   } catch (error) {
@@ -112,14 +135,17 @@ app.post('/api/guestbook', (req, res) => {
 });
 
 // Like signup
-app.post('/api/signup-like', (req, res) => {
+app.post('/api/signup-like', postLimiter, (req, res) => {
   try {
-    const { id } = req.body;
+    const validation = validateLikeRequest(req.body);
     
-    if (!id) {
-      return res.status(400).json({ error: 'Signup ID is required' });
+    if (!validation.valid) {
+      return res.status(400).json({ 
+        error: validation.errors.join(', ') 
+      });
     }
 
+    const { id } = validation.data;
     const likes = incrementSignupLikes(id);
     res.json({ success: true, likes });
   } catch (error) {

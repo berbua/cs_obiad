@@ -1,4 +1,5 @@
 const db = require('./_db');
+const { validateSignup } = require('./validator');
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -22,13 +23,16 @@ module.exports = async (req, res) => {
 
   if (req.method === 'POST') {
     try {
-      const { nick, time, comment, moodIcon } = req.body;
+      const validation = validateSignup(req.body);
       
-      if (!nick) {
-        return res.status(400).json({ error: 'Nick is required' });
+      if (!validation.valid) {
+        return res.status(400).json({ 
+          error: validation.errors.join(', ') 
+        });
       }
 
-      const result = await db.addSignup(nick, time || '', comment || '', moodIcon || '🍕');
+      const { nick, time, comment, moodIcon } = validation.data;
+      const result = await db.addSignup(nick, time, comment, moodIcon);
       return res.json({ success: true, id: result.lastInsertRowid });
     } catch (error) {
       console.error('Error adding signup:', error);

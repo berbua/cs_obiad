@@ -1,4 +1,5 @@
 const db = require('./_db');
+const { validateGuestbookEntry } = require('./validator');
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -22,12 +23,15 @@ module.exports = async (req, res) => {
 
   if (req.method === 'POST') {
     try {
-      const { nick, comment } = req.body;
+      const validation = validateGuestbookEntry(req.body);
       
-      if (!nick || !comment) {
-        return res.status(400).json({ error: 'Nick and comment are required' });
+      if (!validation.valid) {
+        return res.status(400).json({ 
+          error: validation.errors.join(', ') 
+        });
       }
 
+      const { nick, comment } = validation.data;
       const result = await db.addGuestbookEntry(nick, comment);
       return res.json({ success: true, id: result.lastInsertRowid });
     } catch (error) {

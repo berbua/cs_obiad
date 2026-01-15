@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import Clippy, { useClippyAgent } from '@kusainovv/react-clippy';
+import { useState, useEffect, useRef } from 'react';
+import { Load } from '@kusainovv/react-clippy';
 import './styles.css';
 
 // Use environment variable for API URL
@@ -9,7 +9,7 @@ const API_URL = import.meta.env.VITE_API_URL ||
   (import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:6001/api');
 
 function App() {
-  const { agent } = useClippyAgent();
+  const agentRef = useRef(null);
   const [signups, setSignups] = useState([]);
   const [visits, setVisits] = useState(0);
   const [guestbookEntries, setGuestbookEntries] = useState([]);
@@ -67,11 +67,13 @@ function App() {
       setNotificationsEnabled(true);
     }
 
-    // Initialize Clippy greeting
-    if (agent) {
+    // Initialize Clippy
+    new Load('Clippy', (agent) => {
+      agentRef.current = agent;
+      agent.show();
       agent.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
-    }
-  }, [agent]);
+    });
+  }, []);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -179,9 +181,9 @@ function App() {
 
       if (response.ok) {
         alert('✅ Zapisano na obiad!');
-        if (agent) {
-          agent.play('Congratulate');
-          agent.speak('Świetnie! Zapisano Cię na obiad! Smacznego! 🍕');
+        if (agentRef.current) {
+          agentRef.current.play('Congratulate');
+          agentRef.current.speak('Świetnie! Zapisano Cię na obiad! Smacznego! 🍕');
         }
         setTime('');
         setComment('');
@@ -189,9 +191,9 @@ function App() {
         await fetchSignups();
       } else {
         alert('❌ Błąd! Nie udało się zapisać.');
-        if (agent) {
-          agent.play('Wave');
-          agent.speak('Ups! Coś poszło nie tak. Spróbuj ponownie!');
+        if (agentRef.current) {
+          agentRef.current.play('Wave');
+          agentRef.current.speak('Ups! Coś poszło nie tak. Spróbuj ponownie!');
         }
       }
     } catch (error) {
@@ -219,9 +221,9 @@ function App() {
 
       if (response.ok) {
         alert('✅ Wpis dodany do księgi gości!');
-        if (agent) {
-          agent.play('GetAttention');
-          agent.speak('Dziękuję za wpis w księdze gości! 📝');
+        if (agentRef.current) {
+          agentRef.current.play('GetAttention');
+          agentRef.current.speak('Dziękuję za wpis w księdze gości! 📝');
         }
         setGuestComment('');
         await fetchGuestbook();
@@ -243,11 +245,11 @@ function App() {
       });
 
       if (response.ok) {
-        if (agent) {
+        if (agentRef.current) {
           const animations = ['Pleased', 'Congratulate', 'GetAttention'];
           const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
-          agent.play(randomAnimation);
-          agent.speak('Super! Ktoś dostał lajka! 👍');
+          agentRef.current.play(randomAnimation);
+          agentRef.current.speak('Super! Ktoś dostał lajka! 👍');
         }
         await fetchSignups();
       }
@@ -261,16 +263,16 @@ function App() {
     if (musicPlaying) {
       audio.pause();
       setMusicPlaying(false);
-      if (agent) {
-        agent.play('Wave');
-        agent.speak('No dobra, cisza... 🔇');
+      if (agentRef.current) {
+        agentRef.current.play('Wave');
+        agentRef.current.speak('No dobra, cisza... 🔇');
       }
     } else {
       audio.play();
       setMusicPlaying(true);
-      if (agent) {
-        agent.play('GetTechy');
-        agent.speak('O tak! Nokia Tune! Klasyka! 🎵');
+      if (agentRef.current) {
+        agentRef.current.play('GetTechy');
+        agentRef.current.speak('O tak! Nokia Tune! Klasyka! 🎵');
       }
     }
   };
@@ -461,9 +463,6 @@ function App() {
       <audio id="bgMusic" loop>
         <source src="/music/83326-nokia-tune.mp3" type="audio/mpeg" />
       </audio>
-
-      {/* Clippy Assistant */}
-      <Clippy />
     </div>
   );
 }

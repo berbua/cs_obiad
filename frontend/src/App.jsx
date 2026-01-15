@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import Clippy from '@kusainovv/react-clippy';
+import { Load } from '@kusainovv/react-clippy';
 import './styles.css';
 
 // Use environment variable for API URL
@@ -16,8 +16,7 @@ function App() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [previousSignupsCount, setPreviousSignupsCount] = useState(0);
   const [previousLikesMap, setPreviousLikesMap] = useState({});
-  const [clippyMessage, setClippyMessage] = useState('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
-  const clippyRef = useRef(null);
+  const clippyAgent = useRef(null);
   
   // Form states
   const [nick, setNick] = useState('');
@@ -67,6 +66,13 @@ function App() {
     if ('Notification' in window && Notification.permission === 'granted') {
       setNotificationsEnabled(true);
     }
+
+    // Initialize Clippy
+    new Load('Clippy', (agent) => {
+      clippyAgent.current = agent;
+      agent.show();
+      agent.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
+    });
   }, []);
 
   // Fetch data on component mount
@@ -175,14 +181,20 @@ function App() {
 
       if (response.ok) {
         alert('✅ Zapisano na obiad!');
-        setClippyMessage('Świetnie! Zapisano Cię na obiad! Smacznego! 🍕');
+        if (clippyAgent.current) {
+          clippyAgent.current.play('Congratulate');
+          clippyAgent.current.speak('Świetnie! Zapisano Cię na obiad! Smacznego! 🍕');
+        }
         setTime('');
         setComment('');
         setMoodIcon('🍕');
         await fetchSignups();
       } else {
         alert('❌ Błąd! Nie udało się zapisać.');
-        setClippyMessage('Ups! Coś poszło nie tak. Spróbuj ponownie!');
+        if (clippyAgent.current) {
+          clippyAgent.current.play('Wave');
+          clippyAgent.current.speak('Ups! Coś poszło nie tak. Spróbuj ponownie!');
+        }
       }
     } catch (error) {
       console.error('Error adding signup:', error);
@@ -209,7 +221,10 @@ function App() {
 
       if (response.ok) {
         alert('✅ Wpis dodany do księgi gości!');
-        setClippyMessage('Dziękuję za wpis w księdze gości! 📝');
+        if (clippyAgent.current) {
+          clippyAgent.current.play('GetAttention');
+          clippyAgent.current.speak('Dziękuję za wpis w księdze gości! 📝');
+        }
         setGuestComment('');
         await fetchGuestbook();
       } else {
@@ -230,7 +245,12 @@ function App() {
       });
 
       if (response.ok) {
-        setClippyMessage('Super! Ktoś dostał lajka! 👍');
+        if (clippyAgent.current) {
+          const animations = ['Pleased', 'Congratulate', 'GetAttention'];
+          const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+          clippyAgent.current.play(randomAnimation);
+          clippyAgent.current.speak('Super! Ktoś dostał lajka! 👍');
+        }
         await fetchSignups();
       }
     } catch (error) {
@@ -243,11 +263,17 @@ function App() {
     if (musicPlaying) {
       audio.pause();
       setMusicPlaying(false);
-      setClippyMessage('No dobra, cisza... 🔇');
+      if (clippyAgent.current) {
+        clippyAgent.current.play('Wave');
+        clippyAgent.current.speak('No dobra, cisza... 🔇');
+      }
     } else {
       audio.play();
       setMusicPlaying(true);
-      setClippyMessage('O tak! Nokia Tune! Klasyka! 🎵');
+      if (clippyAgent.current) {
+        clippyAgent.current.play('GetTechy');
+        clippyAgent.current.speak('O tak! Nokia Tune! Klasyka! 🎵');
+      }
     }
   };
 
@@ -437,12 +463,6 @@ function App() {
       <audio id="bgMusic" loop>
         <source src="/music/83326-nokia-tune.mp3" type="audio/mpeg" />
       </audio>
-
-      {/* Clippy Assistant */}
-      <Clippy 
-        ref={clippyRef}
-        message={clippyMessage}
-      />
     </div>
   );
 }

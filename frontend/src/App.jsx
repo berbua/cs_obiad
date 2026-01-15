@@ -642,10 +642,65 @@ function App() {
 
       {/* Footer */}
       <footer className="footer">
-        <div className="music-control">
-          <button onClick={toggleMusic} className="music-btn">
-            {musicPlaying ? '🔇 Wyłącz muzykę' : '🎵 Włącz muzykę'}
-          </button>
+        {/* Winamp-style player */}
+        <div className="winamp-player">
+          <div className="winamp-titlebar">
+            <div className="winamp-title">
+              <span className="winamp-icon">🎵</span>
+              Winamp - [Nokia Tune]
+            </div>
+            <div className="winamp-controls-top">
+              <button className="winamp-minimize">_</button>
+              <button className="winamp-close">X</button>
+            </div>
+          </div>
+          
+          <div className="winamp-main">
+            <div className="winamp-display">
+              <div className="winamp-time">
+                {musicPlaying ? '♪♪♪' : '---'}
+              </div>
+              <div className="winamp-track-info">
+                {musicPlaying ? 'Nokia Tune - Classic Ringtone' : 'Stopped'}
+              </div>
+            </div>
+            
+            <div className="winamp-visualizer">
+              {musicPlaying && Array.from({ length: 20 }).map((_, i) => (
+                <div 
+                  key={i} 
+                  className="winamp-bar"
+                  style={{
+                    animationDelay: `${i * 0.05}s`,
+                    height: `${20 + Math.random() * 80}%`
+                  }}
+                />
+              ))}
+            </div>
+            
+            <div className="winamp-buttons">
+              <button className="winamp-btn" onClick={toggleMusic} title={musicPlaying ? "Stop" : "Play"}>
+                {musicPlaying ? '⏸' : '▶'}
+              </button>
+              <button className="winamp-btn" title="Previous">⏮</button>
+              <button className="winamp-btn" title="Next">⏭</button>
+              <button className="winamp-btn winamp-stop" onClick={() => {
+                const audio = document.getElementById('bgMusic');
+                audio.pause();
+                audio.currentTime = 0;
+                setMusicPlaying(false);
+              }} title="Stop">
+                ⏹
+              </button>
+            </div>
+            
+            <div className="winamp-volume">
+              <span className="winamp-volume-label">Volume</span>
+              <div className="winamp-volume-bar">
+                <div className="winamp-volume-fill"></div>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="visitor-counter">

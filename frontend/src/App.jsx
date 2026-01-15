@@ -22,7 +22,7 @@ function App() {
   const [nick, setNick] = useState('');
   const [time, setTime] = useState('');
   const [comment, setComment] = useState('');
-  const [moodIcon, setMoodIcon] = useState('🍕');
+  const [moodIcon, setMoodIcon] = useState('🟢'); // Domyślnie zielone (dostępny)
   
   // Guestbook form states
   const [guestNick, setGuestNick] = useState('');
@@ -182,6 +182,16 @@ function App() {
     }
   };
 
+  // Helper function to get GG icon SVG path
+  const getGGIconPath = (moodIcon) => {
+    switch(moodIcon) {
+      case '🟢': return '/gg-icons/gg-green.svg';
+      case '🟡': return '/gg-icons/gg-yellow.svg';
+      case '🔴': return '/gg-icons/gg-red.svg';
+      default: return '/gg-icons/gg-green.svg';
+    }
+  };
+
   // Security check - detect malicious input
   const checkForMaliciousInput = (input) => {
     const maliciousPatterns = [
@@ -268,7 +278,7 @@ function App() {
         }
         setTime('');
         setComment('');
-        setMoodIcon('🍕');
+        setMoodIcon('🟢'); // Reset do zielonego
         await fetchSignups();
       } else {
         const errorData = await response.json();
@@ -463,7 +473,11 @@ function App() {
               <div className="signups-list">
                 {signups.map((signup) => (
                   <div key={signup.id} className="signup-item">
-                    <span className="mood-icon">{signup.mood_icon}</span>
+                    <img 
+                      src={getGGIconPath(signup.mood_icon)} 
+                      alt="Status GG" 
+                      className="signup-gg-icon"
+                    />
                     <span className="signup-nick">{signup.nick}</span>
                     {signup.time && <span className="signup-time">⏰ {signup.time}</span>}
                     {signup.comment && (
@@ -523,20 +537,47 @@ function App() {
             </div>
 
             <div className="form-group">
-              <label>Status Głodomora:</label>
-              <div className="mood-selector">
-                {['🍕', '🥗', '🌯', '🍔', '🍜'].map((icon) => (
-                  <label key={icon} className={`mood-option ${moodIcon === icon ? 'selected' : ''}`}>
-                    <input
-                      type="radio"
-                      name="mood"
-                      value={icon}
-                      checked={moodIcon === icon}
-                      onChange={(e) => setMoodIcon(e.target.value)}
-                    />
-                    <span className="mood-icon-large">{icon}</span>
-                  </label>
-                ))}
+              <label>Status GG (Głodomór):</label>
+              <div className="mood-selector gg-status-selector">
+                <label className={`mood-option gg-option ${moodIcon === '🟢' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="mood"
+                    value="🟢"
+                    checked={moodIcon === '🟢'}
+                    onChange={(e) => setMoodIcon(e.target.value)}
+                  />
+                  <span className="gg-status-icon green">
+                    <img src="/gg-icons/gg-green.svg" alt="Dostępny" className="gg-svg-icon" />
+                    <span className="gg-label">Dostępny</span>
+                  </span>
+                </label>
+                <label className={`mood-option gg-option ${moodIcon === '🟡' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="mood"
+                    value="🟡"
+                    checked={moodIcon === '🟡'}
+                    onChange={(e) => setMoodIcon(e.target.value)}
+                  />
+                  <span className="gg-status-icon yellow">
+                    <img src="/gg-icons/gg-yellow.svg" alt="Zaraz wracam" className="gg-svg-icon" />
+                    <span className="gg-label">Zaraz wracam</span>
+                  </span>
+                </label>
+                <label className={`mood-option gg-option ${moodIcon === '🔴' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="mood"
+                    value="🔴"
+                    checked={moodIcon === '🔴'}
+                    onChange={(e) => setMoodIcon(e.target.value)}
+                  />
+                  <span className="gg-status-icon red">
+                    <img src="/gg-icons/gg-red.svg" alt="Zajęty" className="gg-svg-icon" />
+                    <span className="gg-label">Zajęty</span>
+                  </span>
+                </label>
               </div>
             </div>
 

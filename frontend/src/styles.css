@@ -350,6 +350,44 @@ select:focus {
   display: block;
 }
 
+/* GG Status Icons */
+.gg-status-selector {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.gg-option {
+  flex: 1;
+  max-width: 150px;
+}
+
+.gg-status-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.gg-svg-icon {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+
+.gg-label {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.signup-gg-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+}
+
 /* Buttons */
 .submit-btn,
 .guest-btn,

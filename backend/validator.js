@@ -57,10 +57,10 @@ function validateSignup(data) {
     data.comment = '';
   }
   
-  // Mood icon validation
-  const allowedIcons = ['🍕', '🥗', '🌯', '🍔', '🍜', '🍝', '🍱', '🥙'];
+  // Mood icon validation - GG status
+  const allowedIcons = ['🟢', '🟡', '🔴']; // Zielony, Żółty, Czerwony - statusy GG
   if (!data.moodIcon || !allowedIcons.includes(data.moodIcon)) {
-    data.moodIcon = '🍕'; // Default
+    data.moodIcon = '🟢'; // Default - dostępny
   }
   
   return {

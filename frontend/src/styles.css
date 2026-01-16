@@ -855,29 +855,34 @@ select:focus {
   animation: none;
 }
 
+/* Stop idle animation during action animations */
+.clippy-agent[class*='clippy-animate-'] {
+  animation: none !important;
+}
+
 @keyframes clippy-idle {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-3px); }
 }
 
 .clippy-animate-wave {
-  animation: clippy-wave 0.6s ease-in-out;
+  animation: clippy-wave 0.6s ease-in-out !important;
 }
 
 .clippy-animate-getattention {
-  animation: clippy-bounce 0.5s ease-in-out;
+  animation: clippy-bounce 0.5s ease-in-out !important;
 }
 
 .clippy-animate-congratulate {
-  animation: clippy-jump 0.8s ease-in-out;
+  animation: clippy-jump 0.8s ease-in-out !important;
 }
 
 .clippy-animate-gettechy {
-  animation: clippy-wiggle 0.6s ease-in-out;
+  animation: clippy-wiggle 0.6s ease-in-out !important;
 }
 
 .clippy-animate-sad {
-  animation: clippy-sad 1s ease-in-out;
+  animation: clippy-sad 1s ease-in-out !important;
 }
 
 .clippy-animate-thinking,
@@ -891,7 +896,7 @@ select:focus {
 .clippy-animate-checkingsomething,
 .clippy-animate-searching,
 .clippy-animate-alert {
-  animation: clippy-wiggle 0.5s ease-in-out;
+  animation: clippy-wiggle 0.5s ease-in-out !important;
 }
 
 @keyframes clippy-wave {
@@ -901,10 +906,8 @@ select:focus {
 }
 
 @keyframes clippy-bounce {
-  0%, 100% { transform: translateY(0); }
-  25% { transform: translateY(-20px); }
-  50% { transform: translateY(-10px); }
-  75% { transform: translateY(-15px); }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-15px) scale(1.05); }
 }
 
 @keyframes clippy-jump {

@@ -846,12 +846,36 @@ select:focus {
 
 /* Clippy Animations - Let modern-clippy handle all animations */
 .clippy-agent {
-  /* No CSS animations, modern-clippy handles everything via sprites */
+  /* Position Clippy higher from bottom */
+  bottom: 80px !important;
+  right: 40px !important;
 }
 
 .clippy-agent:hover {
   cursor: pointer;
   filter: brightness(1.1);
+}
+
+/* Style Clippy's speech bubble */
+.clippy-balloon,
+.clippy-bubble,
+[class*="balloon"],
+[class*="bubble"] {
+  min-width: 250px !important;
+  max-width: 350px !important;
+  min-height: 60px !important;
+  max-height: 120px !important;
+  padding: 12px 16px !important;
+  line-height: 1.4 !important;
+  font-size: 13px !important;
+}
+
+/* Adjust bubble positioning relative to Clippy */
+.clippy-agent .clippy-balloon,
+.clippy-agent .clippy-bubble,
+.clippy-agent [class*="balloon"],
+.clippy-agent [class*="bubble"] {
+  margin-bottom: 10px !important;
 }
 
 /* Hide the base Clippy frame during animation transitions */

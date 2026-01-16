@@ -237,12 +237,19 @@ function App() {
     if (clippyAgent.current && !clippyAnimating.current) {
       clippyAnimating.current = true;
       try {
+        console.log(`🎬 Playing animation: ${animationName}`);
         await clippyAgent.current.play(animationName);
+        console.log(`✅ Animation finished: ${animationName}`);
+        // Force return to idle state
+        await new Promise(resolve => setTimeout(resolve, 100));
       } catch (error) {
-        console.error('Clippy animation error:', error);
+        console.error('❌ Clippy animation error:', error);
       } finally {
         clippyAnimating.current = false;
+        console.log('🔓 Animation lock released');
       }
+    } else {
+      console.log(`⏭️ Skipping animation ${animationName} - already animating`);
     }
   };
 

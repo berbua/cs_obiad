@@ -236,8 +236,8 @@ function App() {
       try {
         await clippyAgent.current.play(animationName);
         
-        // Short pause after animation completes
-        await new Promise(resolve => setTimeout(resolve, 150));
+        // Force return to standard Idle position to reset sprite frame
+        await clippyAgent.current.play('Idle');
       } catch (error) {
         console.error('❌ Clippy animation error:', error);
       } finally {
@@ -266,8 +266,8 @@ function App() {
         try {
           await clippyAgent.current.play(randomAnim);
           
-          // Short pause after animation
-          await new Promise(resolve => setTimeout(resolve, 150));
+          // Return to standard Idle position after idle animation
+          await clippyAgent.current.play('Idle');
         } catch (error) {
           console.error('Idle animation error:', error);
         } finally {

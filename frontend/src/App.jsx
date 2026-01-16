@@ -11,6 +11,7 @@ const API_URL = import.meta.env.VITE_API_URL ||
 function App() {
   const clippyAgent = useRef(null);
   const clippyAnimating = useRef(false);
+  const idleAnimationTimer = useRef(null);
   const [signups, setSignups] = useState([]);
   const [visits, setVisits] = useState(0);
   const [guestbookEntries, setGuestbookEntries] = useState([]);
@@ -79,32 +80,21 @@ function App() {
         clippy.show();
         clippy.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
         
-        // Start idle animations - random animations every 25-45 seconds
-        const startIdleAnimations = () => {
-          const idleAnimations = ['Wave', 'Thinking', 'Idle'];
-          
-          const performIdleAnimation = async () => {
-            if (clippyAgent.current) {
-              const randomAnim = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
-              await playClippyAnimation(randomAnim);
-            }
-            
-            // Next animation in 25-45 seconds
-            const nextDelay = 25000 + Math.random() * 20000;
-            setTimeout(performIdleAnimation, nextDelay);
-          };
-          
-          // Start first animation after 25 seconds
-          setTimeout(performIdleAnimation, 25000);
-        };
-        
-        startIdleAnimations();
+        // Start idle animations after initial delay
+        scheduleNextIdleAnimation(30000); // First idle animation after 30 seconds
       } catch (error) {
         console.error('❌ Clippy loading failed:', error);
       }
     };
     
     loadClippy();
+    
+    // Cleanup
+    return () => {
+      if (idleAnimationTimer.current) {
+        clearTimeout(idleAnimationTimer.current);
+      }
+    };
   }, []);
 
   // Fetch data on component mount
@@ -232,10 +222,17 @@ function App() {
     }
   };
 
-  // Safe Clippy animation player
+  // Safe Clippy animation player with idle animation reset
   const playClippyAnimation = async (animationName) => {
     if (clippyAgent.current && !clippyAnimating.current) {
       clippyAnimating.current = true;
+      
+      // Clear idle animation timer when user action happens
+      if (idleAnimationTimer.current) {
+        clearTimeout(idleAnimationTimer.current);
+        idleAnimationTimer.current = null;
+      }
+      
       try {
         console.log(`🎬 Playing animation: ${animationName}`);
         await clippyAgent.current.play(animationName);
@@ -247,10 +244,43 @@ function App() {
       } finally {
         clippyAnimating.current = false;
         console.log('🔓 Animation lock released');
+        
+        // Restart idle animation timer with longer delay after user action
+        scheduleNextIdleAnimation(60000); // 60 seconds after user action
       }
     } else {
       console.log(`⏭️ Skipping animation ${animationName} - already animating`);
     }
+  };
+
+  // Schedule next idle animation
+  const scheduleNextIdleAnimation = (minDelay = 30000) => {
+    if (idleAnimationTimer.current) {
+      clearTimeout(idleAnimationTimer.current);
+    }
+    
+    const delay = minDelay + Math.random() * 30000; // minDelay + 0-30 seconds
+    console.log(`⏰ Next idle animation in ${Math.round(delay / 1000)}s`);
+    
+    idleAnimationTimer.current = setTimeout(async () => {
+      if (clippyAgent.current && !clippyAnimating.current) {
+        const idleAnimations = ['Wave', 'Thinking', 'Idle'];
+        const randomAnim = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
+        
+        clippyAnimating.current = true;
+        try {
+          console.log(`😴 Idle animation: ${randomAnim}`);
+          await clippyAgent.current.play(randomAnim);
+        } catch (error) {
+          console.error('Idle animation error:', error);
+        } finally {
+          clippyAnimating.current = false;
+        }
+      }
+      
+      // Schedule next idle animation
+      scheduleNextIdleAnimation(30000); // 30-60 seconds between idle animations
+    }, delay);
   };
 
   // Security check - detect malicious input

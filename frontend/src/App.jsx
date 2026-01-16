@@ -80,10 +80,6 @@ function App() {
           // Start idle animations - random animations every 20-40 seconds
           const startIdleAnimations = () => {
             const idleAnimations = [
-              'LookDown', 'LookUp', 'LookLeft', 'LookRight',
-              'LookDown', 'LookUp', 'LookLeft', 'LookRight', // More eye movements!
-              'LookDown', 'LookUp', 'LookLeft', 'LookRight', // Even more!
-              'LookAround', 'LookConfused', 'Blink', // New eye animations!
               'Thinking', 'Wave', 'Reading', 'Writing',
               'GetTechy', 'GetWizardy', 'CheckingSomething',
               'Searching', 'RestPose', 'Alert'
@@ -93,26 +89,15 @@ function App() {
               if (clippyAgent.current) {
                 const randomAnim = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
                 clippyAgent.current.play(randomAnim);
-                
-                // Sometimes do multiple eye movements in sequence
-                if (randomAnim.startsWith('Look') && Math.random() > 0.5) {
-                  setTimeout(() => {
-                    const eyeMovements = ['LookDown', 'LookUp', 'LookLeft', 'LookRight', 'Blink'];
-                    const anotherLook = eyeMovements[Math.floor(Math.random() * eyeMovements.length)];
-                    if (clippyAgent.current) {
-                      clippyAgent.current.play(anotherLook);
-                    }
-                  }, 1500);
-                }
               }
               
-              // Next animation in 15-35 seconds (more frequent)
-              const nextDelay = 15000 + Math.random() * 20000;
+              // Next animation in 20-40 seconds
+              const nextDelay = 20000 + Math.random() * 20000;
               setTimeout(performIdleAnimation, nextDelay);
             };
             
-            // Start first animation after 15 seconds
-            setTimeout(performIdleAnimation, 15000);
+            // Start first animation after 20 seconds
+            setTimeout(performIdleAnimation, 20000);
           };
           
           startIdleAnimations();

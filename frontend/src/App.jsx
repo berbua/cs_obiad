@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import './styles.css';
+import { initClippy } from 'modern-clippy';
 
 // Use environment variable for API URL
 // In production (Vercel), use relative path /api
@@ -69,55 +70,40 @@ function App() {
       setNotificationsEnabled(true);
     }
 
-    // Load Clippy after a short delay to ensure jQuery is loaded
-    setTimeout(() => {
-      if (window.clippy) {
-        window.clippy.load('Clippy', function(agent) {
-          clippyAgent.current = agent;
-          agent.show();
-          agent.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
+    // Load Modern Clippy
+    const loadClippy = async () => {
+      try {
+        const clippy = await initClippy();
+        clippyAgent.current = clippy;
+        clippy.show();
+        clippy.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
+        
+        // Start idle animations - random animations every 25-45 seconds
+        const startIdleAnimations = () => {
+          const idleAnimations = ['Wave', 'Thinking', 'Idle'];
           
-          // Start idle animations - only animations that work smoothly
-          const startIdleAnimations = () => {
-            const idleAnimations = [
-              'Wave', 'GetAttention', 'Congratulate', 'RestPose'
-            ];
+          const performIdleAnimation = () => {
+            if (clippyAgent.current) {
+              const randomAnim = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
+              clippyAgent.current.play(randomAnim);
+            }
             
-            const performIdleAnimation = () => {
-              if (clippyAgent.current) {
-                const randomAnim = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
-                clippyAgent.current.play(randomAnim);
-              }
-              
-              // Next animation in 25-45 seconds
-              const nextDelay = 25000 + Math.random() * 20000;
-              setTimeout(performIdleAnimation, nextDelay);
-            };
-            
-            // Start first animation after 25 seconds
-            setTimeout(performIdleAnimation, 25000);
+            // Next animation in 25-45 seconds
+            const nextDelay = 25000 + Math.random() * 20000;
+            setTimeout(performIdleAnimation, nextDelay);
           };
           
-          startIdleAnimations();
-        });
+          // Start first animation after 25 seconds
+          setTimeout(performIdleAnimation, 25000);
+        };
+        
+        startIdleAnimations();
+      } catch (error) {
+        console.error('❌ Clippy loading failed:', error);
       }
-      
-      // Setup callback for fast mouse movement
-      window.clippyFastMovement = function() {
-        if (clippyAgent.current) {
-          const messages = [
-            'Hej! Spokojnie! Kręci mi się w głowie! 😵',
-            'Zwolnij trochę! To nie wyścigi! 🏎️',
-            'Auć! Za szybko! Dostałem zawrotów głowy! 💫',
-            'Slow down! Nie jestem spinaczem wyścigowym! 🌀',
-            'Moja głowa! Stop machaniu myszką jak szalony! 😵‍💫'
-          ];
-          const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-          clippyAgent.current.play('Wave');
-          clippyAgent.current.speak(randomMessage);
-        }
-      };
-    }, 500);
+    };
+    
+    loadClippy();
   }, []);
 
   // Fetch data on component mount

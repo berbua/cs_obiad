@@ -76,6 +76,32 @@ function App() {
           clippyAgent.current = agent;
           agent.show();
           agent.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
+          
+          // Start idle animations - random animations every 20-40 seconds
+          const startIdleAnimations = () => {
+            const idleAnimations = [
+              'LookDown', 'LookUp', 'LookLeft', 'LookRight',
+              'Thinking', 'Wave', 'Reading', 'Writing',
+              'GetTechy', 'GetWizardy', 'CheckingSomething',
+              'Searching', 'RestPose', 'Alert'
+            ];
+            
+            const performIdleAnimation = () => {
+              if (clippyAgent.current) {
+                const randomAnim = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
+                clippyAgent.current.play(randomAnim);
+              }
+              
+              // Next animation in 20-40 seconds
+              const nextDelay = 20000 + Math.random() * 20000;
+              setTimeout(performIdleAnimation, nextDelay);
+            };
+            
+            // Start first animation after 20 seconds
+            setTimeout(performIdleAnimation, 20000);
+          };
+          
+          startIdleAnimations();
         });
       }
       

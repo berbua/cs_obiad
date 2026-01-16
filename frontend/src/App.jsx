@@ -10,6 +10,7 @@ const API_URL = import.meta.env.VITE_API_URL ||
 
 function App() {
   const clippyAgent = useRef(null);
+  const clippyAnimating = useRef(false);
   const [signups, setSignups] = useState([]);
   const [visits, setVisits] = useState(0);
   const [guestbookEntries, setGuestbookEntries] = useState([]);
@@ -82,10 +83,10 @@ function App() {
         const startIdleAnimations = () => {
           const idleAnimations = ['Wave', 'Thinking', 'Idle'];
           
-          const performIdleAnimation = () => {
+          const performIdleAnimation = async () => {
             if (clippyAgent.current) {
               const randomAnim = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
-              clippyAgent.current.play(randomAnim);
+              await playClippyAnimation(randomAnim);
             }
             
             // Next animation in 25-45 seconds
@@ -228,6 +229,20 @@ function App() {
       });
     } catch (error) {
       return dateString;
+    }
+  };
+
+  // Safe Clippy animation player
+  const playClippyAnimation = async (animationName) => {
+    if (clippyAgent.current && !clippyAnimating.current) {
+      clippyAnimating.current = true;
+      try {
+        await clippyAgent.current.play(animationName);
+      } catch (error) {
+        console.error('Clippy animation error:', error);
+      } finally {
+        clippyAnimating.current = false;
+      }
     }
   };
 

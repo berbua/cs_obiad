@@ -237,8 +237,11 @@ function App() {
         console.log(`🎬 Playing animation: ${animationName}`);
         await clippyAgent.current.play(animationName);
         console.log(`✅ Animation finished: ${animationName}`);
-        // Force return to idle state
-        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Force return to Idle state to clear animation artifacts
+        console.log(`🔄 Returning to Idle state...`);
+        await clippyAgent.current.play('Idle');
+        console.log(`✓ Back to Idle`);
       } catch (error) {
         console.error('❌ Clippy animation error:', error);
       } finally {
@@ -264,13 +267,16 @@ function App() {
     
     idleAnimationTimer.current = setTimeout(async () => {
       if (clippyAgent.current && !clippyAnimating.current) {
-        const idleAnimations = ['Wave', 'Thinking', 'Idle'];
+        const idleAnimations = ['Wave', 'Thinking'];
         const randomAnim = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
         
         clippyAnimating.current = true;
         try {
           console.log(`😴 Idle animation: ${randomAnim}`);
           await clippyAgent.current.play(randomAnim);
+          // Return to Idle after idle animation
+          console.log(`🔄 Returning to Idle...`);
+          await clippyAgent.current.play('Idle');
         } catch (error) {
           console.error('Idle animation error:', error);
         } finally {

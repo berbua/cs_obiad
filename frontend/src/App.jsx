@@ -75,6 +75,10 @@ function App() {
     // Load Modern Clippy
     const loadClippy = async () => {
       try {
+        // Remove any existing Clippy instances from DOM
+        const existingClippy = document.querySelectorAll('.clippy-agent');
+        existingClippy.forEach(el => el.remove());
+        
         const clippy = await initClippy();
         clippyAgent.current = clippy;
         clippy.show();
@@ -94,6 +98,19 @@ function App() {
       if (idleAnimationTimer.current) {
         clearTimeout(idleAnimationTimer.current);
       }
+      
+      // Remove Clippy from DOM on unmount
+      if (clippyAgent.current) {
+        try {
+          clippyAgent.current.hide();
+        } catch (e) {
+          console.log('Clippy cleanup error:', e);
+        }
+      }
+      
+      // Force remove all Clippy DOM elements
+      const clippyElements = document.querySelectorAll('.clippy-agent');
+      clippyElements.forEach(el => el.remove());
     };
   }, []);
 

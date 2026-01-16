@@ -854,6 +854,24 @@ select:focus {
   filter: brightness(1.1);
 }
 
+/* Hide the base Clippy frame during animation transitions */
+.clippy-agent * {
+  transition: opacity 0.05s ease-out;
+}
+
+/* Clippy container - ensure single instance visibility */
+.clippy-agent {
+  position: fixed;
+  z-index: 10000;
+}
+
+/* Smooth transition between animation frames */
+.clippy-agent canvas,
+.clippy-agent img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
 /* Homepage Popup */
 .homepage-popup-overlay {
   position: fixed;

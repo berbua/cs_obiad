@@ -869,9 +869,10 @@ select:focus {
   line-height: 1.4 !important;
   font-size: 13px !important;
   /* Position bubble to the left of Clippy - increased margin */
-  margin-right: 200px !important;
+  /* margin-right: 200px !important; */
   right: auto !important;
-  left: auto !important;
+  left: -235px !important;
+  top: 10px !important;
 }
 
 /* Adjust bubble positioning relative to Clippy */

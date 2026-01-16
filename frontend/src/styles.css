@@ -844,75 +844,14 @@ select:focus {
   box-shadow: 0 0 3px #00ff00;
 }
 
-/* Clippy Animations */
+/* Clippy Animations - Let modern-clippy handle all animations */
 .clippy-agent {
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  animation: clippy-idle 3s ease-in-out infinite;
+  /* No CSS animations, modern-clippy handles everything via sprites */
 }
 
 .clippy-agent:hover {
-  transform: scale(1.1);
-  animation: none;
-}
-
-/* Stop idle animation during action animations */
-.clippy-agent[class*='clippy-animate-'] {
-  animation: none !important;
-}
-
-@keyframes clippy-idle {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-3px); }
-}
-
-.clippy-animate-wave {
-  animation: clippy-subtle-bounce 1.2s ease-in-out !important;
-}
-
-.clippy-animate-getattention {
-  animation: clippy-subtle-bounce 1s ease-in-out !important;
-}
-
-.clippy-animate-congratulate {
-  animation: clippy-subtle-bounce 1.5s ease-in-out !important;
-}
-
-.clippy-animate-gettechy {
-  animation: clippy-subtle-bounce 1.2s ease-in-out !important;
-}
-
-.clippy-animate-sad {
-  animation: clippy-subtle-sway 1.5s ease-in-out !important;
-}
-
-.clippy-animate-thinking,
-.clippy-animate-lookdown,
-.clippy-animate-lookup,
-.clippy-animate-lookleft,
-.clippy-animate-lookright,
-.clippy-animate-reading,
-.clippy-animate-writing,
-.clippy-animate-getwizardy,
-.clippy-animate-checkingsomething,
-.clippy-animate-searching,
-.clippy-animate-alert {
-  animation: clippy-subtle-bounce 1s ease-in-out !important;
-}
-
-/* Subtle animations that complement sprite changes */
-@keyframes clippy-subtle-bounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-5px) scale(1.02); }
-}
-
-@keyframes clippy-subtle-sway {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(3px); opacity: 0.9; }
-}
-
-@keyframes clippy-sad {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(5px); opacity: 0.8; }
+  cursor: pointer;
+  filter: brightness(1.1);
 }
 
 /* Homepage Popup */

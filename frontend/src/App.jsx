@@ -235,8 +235,15 @@ function App() {
       
       try {
         console.log(`🎬 Playing animation: ${animationName}`);
+        
+        // Small delay to let previous animation frame clear
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
         await clippyAgent.current.play(animationName);
         console.log(`✅ Animation finished: ${animationName}`);
+        
+        // Small delay before returning to Idle
+        await new Promise(resolve => setTimeout(resolve, 100));
         
         // Force return to Idle state to clear animation artifacts
         console.log(`🔄 Returning to Idle state...`);
@@ -273,7 +280,15 @@ function App() {
         clippyAnimating.current = true;
         try {
           console.log(`😴 Idle animation: ${randomAnim}`);
+          
+          // Small delay before starting animation
+          await new Promise(resolve => setTimeout(resolve, 50));
+          
           await clippyAgent.current.play(randomAnim);
+          
+          // Small delay before returning to Idle
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
           // Return to Idle after idle animation
           console.log(`🔄 Returning to Idle...`);
           await clippyAgent.current.play('Idle');

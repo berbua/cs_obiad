@@ -234,32 +234,18 @@ function App() {
       }
       
       try {
-        console.log(`🎬 Playing animation: ${animationName}`);
-        
-        // Small delay to let previous animation frame clear
-        await new Promise(resolve => setTimeout(resolve, 50));
-        
         await clippyAgent.current.play(animationName);
-        console.log(`✅ Animation finished: ${animationName}`);
         
-        // Small delay before returning to Idle
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Force return to Idle state to clear animation artifacts
-        console.log(`🔄 Returning to Idle state...`);
-        await clippyAgent.current.play('Idle');
-        console.log(`✓ Back to Idle`);
+        // Short pause after animation completes
+        await new Promise(resolve => setTimeout(resolve, 150));
       } catch (error) {
         console.error('❌ Clippy animation error:', error);
       } finally {
         clippyAnimating.current = false;
-        console.log('🔓 Animation lock released');
         
         // Restart idle animation timer with longer delay after user action
         scheduleNextIdleAnimation(60000); // 60 seconds after user action
       }
-    } else {
-      console.log(`⏭️ Skipping animation ${animationName} - already animating`);
     }
   };
 
@@ -270,7 +256,6 @@ function App() {
     }
     
     const delay = minDelay + Math.random() * 30000; // minDelay + 0-30 seconds
-    console.log(`⏰ Next idle animation in ${Math.round(delay / 1000)}s`);
     
     idleAnimationTimer.current = setTimeout(async () => {
       if (clippyAgent.current && !clippyAnimating.current) {
@@ -279,19 +264,10 @@ function App() {
         
         clippyAnimating.current = true;
         try {
-          console.log(`😴 Idle animation: ${randomAnim}`);
-          
-          // Small delay before starting animation
-          await new Promise(resolve => setTimeout(resolve, 50));
-          
           await clippyAgent.current.play(randomAnim);
           
-          // Small delay before returning to Idle
-          await new Promise(resolve => setTimeout(resolve, 100));
-          
-          // Return to Idle after idle animation
-          console.log(`🔄 Returning to Idle...`);
-          await clippyAgent.current.play('Idle');
+          // Short pause after animation
+          await new Promise(resolve => setTimeout(resolve, 150));
         } catch (error) {
           console.error('Idle animation error:', error);
         } finally {

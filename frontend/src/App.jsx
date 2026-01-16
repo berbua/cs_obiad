@@ -128,7 +128,7 @@ function App() {
     const timer = setTimeout(() => {
       setShowHomepagePopup(true);
       if (clippyAgent.current) {
-        clippyAgent.current.play('GetAttention');
+        playClippyAnimation('GetAttention');
         clippyAgent.current.speak('Hej! Widzę, że podoba Ci się nasza strona! 😊 Może ustaw ją jako swoją stronę startową?');
       }
     }, 60000); // 60 seconds = 1 minute
@@ -269,7 +269,7 @@ function App() {
     // Security check for malicious input
     if (checkForMaliciousInput(nick) || checkForMaliciousInput(comment)) {
       if (clippyAgent.current) {
-        clippyAgent.current.play('Wave');
+        playClippyAnimation('GetAttention');
         clippyAgent.current.speak('Hola hola! Nie ze mną te numery! 🚫 Widzę co próbujesz zrobić, hakerze! 👀');
       }
       alert('⚠️ Wykryto podejrzaną treść! Nice try, ale Clippy Cię pilnuje! 😎');
@@ -284,7 +284,7 @@ function App() {
     
     if (nick.length > 50) {
       if (clippyAgent.current) {
-        clippyAgent.current.play('GetAttention');
+        playClippyAnimation('GetAttention');
         clippyAgent.current.speak('Spokojnie! Ten nick jest za długi! Może coś krótszego? 📏');
       }
       alert('⚠️ Nick może mieć maksymalnie 50 znaków!');
@@ -293,7 +293,7 @@ function App() {
     
     if (time && time.length > 20) {
       if (clippyAgent.current) {
-        clippyAgent.current.play('Wave');
+        playClippyAnimation('Wave');
         clippyAgent.current.speak('Ta godzina jest podejrzanie długa... 🤔');
       }
       alert('⚠️ Godzina może mieć maksymalnie 20 znaków!');
@@ -302,7 +302,7 @@ function App() {
     
     if (comment && comment.length > 200) {
       if (clippyAgent.current) {
-        clippyAgent.current.play('GetAttention');
+        playClippyAnimation('GetAttention');
         clippyAgent.current.speak('Wow! To esej czy komentarz? Skróć trochę! ✂️');
       }
       alert('⚠️ Komentarz może mieć maksymalnie 200 znaków!');
@@ -327,7 +327,7 @@ function App() {
       if (response.ok) {
         alert('✅ Zapisano na obiad!');
         if (clippyAgent.current) {
-          clippyAgent.current.play('Congratulate');
+          playClippyAnimation('Congratulate');
           clippyAgent.current.speak('Świetnie! Zapisano Cię na obiad! Smacznego! 🍕');
         }
         setTime('');
@@ -338,7 +338,7 @@ function App() {
         const errorData = await response.json();
         alert(`❌ Błąd! ${errorData.error || 'Nie udało się zapisać.'}`);
         if (clippyAgent.current) {
-          clippyAgent.current.play('Wave');
+          playClippyAnimation('Wave');
           clippyAgent.current.speak('Ups! Coś poszło nie tak. Spróbuj ponownie!');
         }
       }
@@ -354,7 +354,7 @@ function App() {
     // Security check for malicious input
     if (checkForMaliciousInput(guestNick) || checkForMaliciousInput(guestComment)) {
       if (clippyAgent.current) {
-        clippyAgent.current.play('Wave');
+        playClippyAnimation('GetAttention');
         clippyAgent.current.speak('Stop! 🛑 Wykryłem podejrzany kod! Myślisz że jestem z wczoraj? 🤨');
       }
       alert('⚠️ Wykryto podejrzaną treść! Clippy Security™ na posterunku! 🔒');
@@ -369,7 +369,7 @@ function App() {
     
     if (guestNick.length > 50) {
       if (clippyAgent.current) {
-        clippyAgent.current.play('GetAttention');
+        playClippyAnimation('GetAttention');
         clippyAgent.current.speak('Ten nick jest za długi! Może coś krótsz... krótszego? 😅');
       }
       alert('⚠️ Nick może mieć maksymalnie 50 znaków!');
@@ -383,7 +383,7 @@ function App() {
     
     if (guestComment.length > 500) {
       if (clippyAgent.current) {
-        clippyAgent.current.play('GetAttention');
+        playClippyAnimation('GetAttention');
         clippyAgent.current.speak('To już nie komentarz, to książka! Skróć proszę! 📚➡️📄');
       }
       alert('⚠️ Komentarz może mieć maksymalnie 500 znaków!');
@@ -406,7 +406,7 @@ function App() {
       if (response.ok) {
         alert('✅ Wpis dodany do księgi gości!');
         if (clippyAgent.current) {
-          clippyAgent.current.play('GetAttention');
+          playClippyAnimation('Congratulate');
           clippyAgent.current.speak('Dziękuję za wpis w księdze gości! 📝');
         }
         setGuestComment('');
@@ -431,9 +431,9 @@ function App() {
 
       if (response.ok) {
         if (clippyAgent.current) {
-          const animations = ['Pleased', 'Congratulate', 'GetAttention'];
+          const animations = ['Congratulate', 'GetAttention', 'Wave'];
           const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
-          clippyAgent.current.play(randomAnimation);
+          await playClippyAnimation(randomAnimation);
           clippyAgent.current.speak(`Super! ${nick} dostał lajka! 👍`);
         }
         await fetchSignups();
@@ -443,39 +443,39 @@ function App() {
     }
   };
 
-  const toggleMusic = () => {
+  const toggleMusic = async () => {
     const audio = document.getElementById('bgMusic');
     if (musicPlaying) {
       audio.pause();
       setMusicPlaying(false);
       if (clippyAgent.current) {
-        clippyAgent.current.play('Wave');
+        await playClippyAnimation('Wave');
         clippyAgent.current.speak('No dobra, cisza... 🔇');
       }
     } else {
       audio.play();
       setMusicPlaying(true);
       if (clippyAgent.current) {
-        clippyAgent.current.play('GetTechy');
+        await playClippyAnimation('Congratulate');
         clippyAgent.current.speak('O tak! Nokia Tune! Klasyka! 🎵');
       }
     }
   };
 
-  const toggleCursorTrails = () => {
+  const toggleCursorTrails = async () => {
     if (window.CursorTrails) {
       if (cursorTrailsEnabled) {
         window.CursorTrails.disable();
         setCursorTrailsEnabled(false);
         if (clippyAgent.current) {
-          clippyAgent.current.play('Wave');
+          await playClippyAnimation('Wave');
           clippyAgent.current.speak('Uff! W końcu spokój! Te gwiazdki mnie męczyły! 😮‍💨');
         }
       } else {
         window.CursorTrails.enable();
         setCursorTrailsEnabled(true);
         if (clippyAgent.current) {
-          clippyAgent.current.play('GetTechy');
+          await playClippyAnimation('GetAttention');
           clippyAgent.current.speak('Wow! Gwiazdki! To prawdziwy retro feeling! ✨ Tylko nie machaj za szybko!');
         }
       }
@@ -509,20 +509,20 @@ function App() {
     }
   };
 
-  const handleNoClick = () => {
+  const handleNoClick = async () => {
     setShowHomepagePopup(false);
     if (clippyAgent.current) {
-      clippyAgent.current.play('Sad');
+      await playClippyAnimation('Thinking');
       clippyAgent.current.speak('Oj... Szkoda... No ale rozumiem. 😢 Może następnym razem!');
     }
   };
 
-  const handleYesClick = () => {
+  const handleYesClick = async () => {
     // This should never happen, but just in case
     alert('Gratulacje! Udało Ci się kliknąć! 🎉\n\n...ale tak naprawdę nie możemy ustawić strony startowej bez Twojej zgody. 😊');
     setShowHomepagePopup(false);
     if (clippyAgent.current) {
-      clippyAgent.current.play('Congratulate');
+      await playClippyAnimation('Congratulate');
       clippyAgent.current.speak('Wow! Udało Ci się! Jesteś mistrzem klikania! 🏆');
     }
   };
@@ -567,7 +567,7 @@ function App() {
           {signups.length === 0 ? (
             <p className="big-text">Dzis jeszcze nikt sie nie zapisal! 😢</p>
           ) : (
-            <div>
+      <div>
               <p className="big-text">Dzis zapisanych: {signups.length} osób! 🎉</p>
               <div className="signups-list">
                 {signups.map((signup) => (
@@ -774,7 +774,7 @@ function App() {
                   }}
                 />
               ))}
-            </div>
+      </div>
             
             <div className="winamp-buttons">
               <button className="winamp-btn" onClick={toggleMusic} title={musicPlaying ? "Stop" : "Play"}>
@@ -789,7 +789,7 @@ function App() {
                 setMusicPlaying(false);
               }} title="Stop">
                 ⏹
-              </button>
+        </button>
             </div>
             
             <div className="winamp-volume">
@@ -866,7 +866,7 @@ function App() {
           </div>
         </div>
       )}
-    </div>
+      </div>
   );
 }
 

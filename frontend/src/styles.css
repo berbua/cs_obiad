@@ -866,23 +866,23 @@ select:focus {
 }
 
 .clippy-animate-wave {
-  animation: clippy-wave 0.6s ease-in-out !important;
+  animation: clippy-wave 0.8s ease-in-out !important;
 }
 
 .clippy-animate-getattention {
-  animation: clippy-bounce 0.5s ease-in-out !important;
+  animation: clippy-bounce 0.6s ease-in-out !important;
 }
 
 .clippy-animate-congratulate {
-  animation: clippy-jump 0.8s ease-in-out !important;
+  animation: clippy-jump 1s ease-in-out !important;
 }
 
 .clippy-animate-gettechy {
-  animation: clippy-wiggle 0.6s ease-in-out !important;
+  animation: clippy-wiggle 0.7s ease-in-out !important;
 }
 
 .clippy-animate-sad {
-  animation: clippy-sad 1s ease-in-out !important;
+  animation: clippy-sad 1.2s ease-in-out !important;
 }
 
 .clippy-animate-thinking,
@@ -896,32 +896,39 @@ select:focus {
 .clippy-animate-checkingsomething,
 .clippy-animate-searching,
 .clippy-animate-alert {
-  animation: clippy-wiggle 0.5s ease-in-out !important;
+  animation: clippy-wiggle 0.6s ease-in-out !important;
 }
 
 @keyframes clippy-wave {
   0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-15deg); }
-  75% { transform: rotate(15deg); }
+  20% { transform: rotate(-10deg); }
+  40% { transform: rotate(10deg); }
+  60% { transform: rotate(-8deg); }
+  80% { transform: rotate(8deg); }
 }
 
 @keyframes clippy-bounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-15px) scale(1.05); }
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-20px) scale(1.05); }
+  50% { transform: translateY(-10px) scale(1.02); }
+  70% { transform: translateY(-15px) scale(1.03); }
+  100% { transform: translateY(0) scale(1); }
 }
 
 @keyframes clippy-jump {
   0%, 100% { transform: translateY(0) scale(1); }
-  30% { transform: translateY(-30px) scale(1.1); }
-  50% { transform: translateY(0) scale(0.9); }
-  70% { transform: translateY(-15px) scale(1.05); }
+  20% { transform: translateY(-40px) scale(1.1); }
+  40% { transform: translateY(0) scale(0.95); }
+  60% { transform: translateY(-20px) scale(1.05); }
+  80% { transform: translateY(0) scale(0.98); }
 }
 
 @keyframes clippy-wiggle {
-  0%, 100% { transform: rotate(0deg) translateX(0); }
-  25% { transform: rotate(5deg) translateX(-5px); }
-  50% { transform: rotate(-5deg) translateX(5px); }
-  75% { transform: rotate(3deg) translateX(-3px); }
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(5deg) translateX(-3px); }
+  40% { transform: rotate(-5deg) translateX(3px); }
+  60% { transform: rotate(4deg) translateX(-2px); }
+  80% { transform: rotate(-4deg) translateX(2px); }
 }
 
 @keyframes clippy-sad {

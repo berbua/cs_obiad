@@ -271,6 +271,9 @@ function App() {
       try {
         await clippyAgent.current.play(animationName);
         
+        // Pause to let the last frame of animation display
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
         // Force return to standard Idle position to reset sprite frame
         await clippyAgent.current.play('Idle');
       } catch (error) {
@@ -300,6 +303,9 @@ function App() {
         clippyAnimating.current = true;
         try {
           await clippyAgent.current.play(randomAnim);
+          
+          // Pause to let the last frame display
+          await new Promise(resolve => setTimeout(resolve, 300));
           
           // Return to standard Idle position after idle animation
           await clippyAgent.current.play('Idle');

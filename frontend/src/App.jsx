@@ -12,6 +12,7 @@ function App() {
   const clippyAgent = useRef(null);
   const clippyAnimating = useRef(false);
   const idleAnimationTimer = useRef(null);
+  const clippyLoaded = useRef(false); // Track if Clippy is already loaded
   const [signups, setSignups] = useState([]);
   const [visits, setVisits] = useState(0);
   const [guestbookEntries, setGuestbookEntries] = useState([]);
@@ -74,20 +75,32 @@ function App() {
 
     // Load Modern Clippy
     const loadClippy = async () => {
+      // Prevent double loading in React StrictMode
+      if (clippyLoaded.current) {
+        console.log('⏭️ Clippy already loaded, skipping...');
+        return;
+      }
+      
+      clippyLoaded.current = true;
+      
       try {
         // Remove any existing Clippy instances from DOM
         const existingClippy = document.querySelectorAll('.clippy-agent');
+        console.log(`🧹 Cleaning up ${existingClippy.length} existing Clippy instances`);
         existingClippy.forEach(el => el.remove());
         
+        console.log('📎 Loading Clippy...');
         const clippy = await initClippy();
         clippyAgent.current = clippy;
         clippy.show();
         clippy.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
+        console.log('✅ Clippy loaded successfully');
         
         // Start idle animations after initial delay
         scheduleNextIdleAnimation(30000); // First idle animation after 30 seconds
       } catch (error) {
         console.error('❌ Clippy loading failed:', error);
+        clippyLoaded.current = false; // Reset on error so it can retry
       }
     };
     
@@ -95,9 +108,14 @@ function App() {
     
     // Cleanup
     return () => {
+      console.log('🧹 Cleaning up Clippy on unmount');
+      
       if (idleAnimationTimer.current) {
         clearTimeout(idleAnimationTimer.current);
       }
+      
+      // Don't reset clippyLoaded here - we want to keep the instance
+      // Only clean up on actual unmount (not StrictMode re-render)
       
       // Remove Clippy from DOM on unmount
       if (clippyAgent.current) {

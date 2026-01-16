@@ -77,12 +77,10 @@ function App() {
           agent.show();
           agent.speak('Witaj na stronie obiadowej! Czy potrzebujesz pomocy z zapisaniem się na obiad? 🍕');
           
-          // Start idle animations - random animations every 20-40 seconds
+          // Start idle animations - only animations that work smoothly
           const startIdleAnimations = () => {
             const idleAnimations = [
-              'Thinking', 'Wave', 'Reading', 'Writing',
-              'GetTechy', 'GetWizardy', 'CheckingSomething',
-              'Searching', 'RestPose', 'Alert'
+              'Wave', 'GetAttention', 'Congratulate', 'RestPose'
             ];
             
             const performIdleAnimation = () => {
@@ -91,13 +89,13 @@ function App() {
                 clippyAgent.current.play(randomAnim);
               }
               
-              // Next animation in 20-40 seconds
-              const nextDelay = 20000 + Math.random() * 20000;
+              // Next animation in 25-45 seconds
+              const nextDelay = 25000 + Math.random() * 20000;
               setTimeout(performIdleAnimation, nextDelay);
             };
             
-            // Start first animation after 20 seconds
-            setTimeout(performIdleAnimation, 20000);
+            // Start first animation after 25 seconds
+            setTimeout(performIdleAnimation, 25000);
           };
           
           startIdleAnimations();

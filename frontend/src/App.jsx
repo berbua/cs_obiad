@@ -400,7 +400,7 @@ function App() {
       });
 
       if (response.ok) {
-        alert('✅ Zapisano na obiad!');
+        // Use Clippy instead of alert for success message
         if (clippyAgent.current) {
           playClippyAnimation('Congratulate');
           clippyAgent.current.speak('Świetnie! Zapisano Cię na obiad! Smacznego! 🍕');
@@ -411,15 +411,19 @@ function App() {
         await fetchSignups();
       } else {
         const errorData = await response.json();
-        alert(`❌ Błąd! ${errorData.error || 'Nie udało się zapisać.'}`);
+        // Use Clippy for error message
         if (clippyAgent.current) {
-          playClippyAnimation('Wave');
-          clippyAgent.current.speak('Ups! Coś poszło nie tak. Spróbuj ponownie!');
+          playClippyAnimation('GetAttention');
+          clippyAgent.current.speak(`Ups! Błąd: ${errorData.error || 'Nie udało się zapisać.'} Spróbuj ponownie!`);
         }
       }
     } catch (error) {
       console.error('Error adding signup:', error);
-      alert('❌ Błąd połączenia! Sprawdź czy backend działa na http://localhost:6001');
+      // Use Clippy for connection error
+      if (clippyAgent.current) {
+        playClippyAnimation('GetAttention');
+        clippyAgent.current.speak('❌ Błąd połączenia! Nie mogę połączyć się z serwerem. Sprawdź czy backend działa!');
+      }
     }
   };
 
@@ -479,20 +483,28 @@ function App() {
       });
 
       if (response.ok) {
-        alert('✅ Wpis dodany do księgi gości!');
+        // Use Clippy instead of alert for guestbook success
         if (clippyAgent.current) {
           playClippyAnimation('Congratulate');
-          clippyAgent.current.speak('Dziękuję za wpis w księdze gości! 📝');
+          clippyAgent.current.speak('Dziękuję za wpis w księdze gości! 📝 Twoja opinia jest bardzo ważna!');
         }
         setGuestComment('');
         await fetchGuestbook();
       } else {
         const errorData = await response.json();
-        alert(`❌ Błąd! ${errorData.error || 'Nie udało się dodać wpisu.'}`);
+        // Use Clippy for guestbook error
+        if (clippyAgent.current) {
+          playClippyAnimation('GetAttention');
+          clippyAgent.current.speak(`Ojej! Błąd: ${errorData.error || 'Nie udało się dodać wpisu.'}`);
+        }
       }
     } catch (error) {
       console.error('Error adding guestbook entry:', error);
-      alert('❌ Błąd połączenia! Sprawdź czy backend działa.');
+      // Use Clippy for guestbook connection error
+      if (clippyAgent.current) {
+        playClippyAnimation('GetAttention');
+        clippyAgent.current.speak('❌ Problem z połączeniem! Nie mogę zapisać Twojego wpisu w księdze gości.');
+      }
     }
   };
 
@@ -593,12 +605,11 @@ function App() {
   };
 
   const handleYesClick = async () => {
-    // This should never happen, but just in case
-    alert('Gratulacje! Udało Ci się kliknąć! 🎉\n\n...ale tak naprawdę nie możemy ustawić strony startowej bez Twojej zgody. 😊');
+    // This should never happen, but just in case - use Clippy instead of alert
     setShowHomepagePopup(false);
     if (clippyAgent.current) {
       await playClippyAnimation('Congratulate');
-      clippyAgent.current.speak('Wow! Udało Ci się! Jesteś mistrzem klikania! 🏆');
+      clippyAgent.current.speak('Wow! Udało Ci się kliknąć! 🎉 Jesteś mistrzem klikania! Ale tak naprawdę nie możemy ustawić strony startowej bez Twojej zgody. 😊');
     }
   };
 
